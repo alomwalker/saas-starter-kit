@@ -1,0 +1,26 @@
+name: CI
+
+# Runs on every push and pull request. Typecheck + production build only —
+# the build must not need a live database (Prisma generate needs the
+# schema only), and no secrets are used anywhere in this workflow.
+# AUTH_SECRET below is a non-secret placeholder so the build can run
+# without a real secret; the app never starts in CI.
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      AUTH_SECRET: ci-placeholder-not-a-real-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run typecheck
+      - run: npm run build
