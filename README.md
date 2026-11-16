@@ -221,6 +221,45 @@ session metadata and activates it in the database; on
 the user to the free plan. Unknown events and sessions with no plan
 in metadata are acknowledged and ignored.
 
+## Affiliates — NOT built in (Polar has no native programme)
+
+Researched 2026-11-16. **Polar has no native affiliate programme** —
+there is no built-in affiliate management, tracking or commission
+payout in Polar. Do not promise affiliates a rate (no Polar source
+states one for sellers) and do not build affiliate tracking into
+the kit on a guess.
+
+The documented route is a third-party affiliate tool. Polar's own
+docs feature **Affonso** (`polar.sh/docs/features/integrations/affonso`,
+updated 2026-11-12); Sled is another Polar-native option. The shape,
+per Polar's Affonso guide:
+
+1. Create a Polar access token for the tool (Settings → Access
+   Tokens, no expiration — tracking stops if it expires) with
+   scopes `discounts:read/write`, `events:read`,
+   `subscriptions:read`, `customers:read/write`, `orders:read`,
+   `refunds:read`, `webhooks:read/write`, and paste it into the
+   tool's integration settings.
+2. Add the tool's webhook URL + secret to Polar (Settings →
+   Webhooks, format RAW, events `order.created`,
+   `order.refunded`, `subscription.canceled`).
+3. Add the tool's tracking script to the `<head>` of every page
+   (marketing site, app domain, subdomains).
+4. Pass the referral data when creating the Polar checkout session
+   (the tool's guide shows the exact field) so the sale is
+   attributed; Polar's webhook then notifies the tool, which
+   calculates the commission. The commission rate is set in the
+   tool, by the seller — it is not a Polar setting.
+
+Do not confuse this with Polar's own referrer programme (Dub
+partners page): Polar pays people who refer new customers **to
+Polar** (25% for 12 months, rising to 30% after $5,000 referred).
+That rate is for referring Polar itself — it has nothing to do with
+affiliates selling your product.
+
+Until a seller sets up a tool above, there is no affiliate
+programme for this kit, and the pricing page promises none.
+
 ## Billing — Paddle (fallback)
 
 Paddle is also a merchant of record and lists Bangladesh as supported

@@ -71,6 +71,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
       "Polar webhooks POST to /api/webhooks/polar — the signature is verified (Svix) and a completed order/subscription activates the buyer's plan in the database; cancellations downgrade them to free.",
       "Stripe webhooks POST to /api/webhooks/stripe — the signature is verified (HMAC-SHA256) and a completed Checkout Session activates the buyer's plan from its metadata; a refunded charge downgrades them to free.",
       "Set the webhook URLs (https://your-domain.com/api/webhooks/polar and /api/webhooks/stripe) and the matching secrets (POLAR_WEBHOOK_SECRET, STRIPE_WEBHOOK_SECRET).",
+      "Affiliates: Polar has no native affiliate programme (researched 2026-11-16). Do not promise a rate — none is documented for sellers. The documented route is a third-party tool (Affonso, in Polar's own docs): a Polar access token, the tool's webhook endpoint in Polar, its tracking script on every page, and the referral passed at checkout. The commission rate is set in the tool, not in Polar. See README § Affiliates.",
       "Fallback: Paddle is also a merchant of record — see README § Billing.",
     ],
   },
