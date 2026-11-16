@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Card } from "@/components/ui";
 import DocsSearch from "./DocsSearch";
 
 export const metadata: Metadata = {
@@ -105,6 +106,23 @@ export default function DocsPage() {
           Everything you need to run, brand, and launch this starter kit.
         </p>
         <DocsSearch sections={SECTIONS} />
+        <Card className="mt-6 p-6">
+          <h2 className="text-lg font-semibold text-slate-900">Deploy to Vercel</h2>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            One click imports this repo into Vercel — but it imports
+            the default branch (the paid kit). To deploy this Lite
+            version, pick the <span className="font-mono text-[13px]">lite</span> branch
+            on Vercel&apos;s import screen. You still have to set the
+            env vars and the build command from the Deploy section
+            above.
+          </p>
+          <a
+            href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Falomwalker%2Fsaas-starter-kit"
+            className="mt-4 inline-block rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+          >
+            ▲ Deploy to Vercel
+          </a>
+        </Card>
       </main>
     </div>
   );
