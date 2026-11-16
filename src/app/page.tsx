@@ -19,6 +19,8 @@ function Nav() {
         <nav className="hidden items-center gap-6 text-sm text-slate-600 md:flex">
           <a href="/pricing" className="hover:text-slate-900">Pricing</a>
           <a href="/docs" className="hover:text-slate-900">Docs</a>
+          <a href="/blog" className="hover:text-slate-900">Blog</a>
+          <a href="/changelog" className="hover:text-slate-900">Changelog</a>
           <a href="/dashboard" className="hover:text-slate-900">Dashboard</a>
         </nav>
         <div className="flex items-center gap-2">
@@ -39,6 +41,10 @@ function Footer() {
           <a href="/pricing" className="hover:text-slate-900">Pricing</a>
           {" · "}
           <a href="/docs" className="hover:text-slate-900">Docs</a>
+          {" · "}
+          <a href="/blog" className="hover:text-slate-900">Blog</a>
+          {" · "}
+          <a href="/changelog" className="hover:text-slate-900">Changelog</a>
           {" · "}
           <a href="/dashboard" className="hover:text-slate-900">Dashboard</a>
         </span>
@@ -106,6 +112,30 @@ export default function LandingPage() {
           </div>
           <div className="mt-10 text-center">
             <Button href="/pricing" className="px-6 py-3 text-base">See pricing →</Button>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 pb-20">
+          <SectionHeading
+            eyebrow="Early makers"
+            title="Be one of the first to ship with this kit"
+            subtitle="There are no testimonials here yet — this kit launched in November 2026 and the first buyers are still building. When real makers ship with it, their words go here. The customer count will appear once the first real buyer exists; until then, there is nothing to count."
+          />
+          <div className="mx-auto mt-10 max-w-2xl">
+            <Card className="p-8 text-center">
+              <p className="text-lg font-semibold text-slate-900">
+                No testimonials yet — and we would rather say so than invent
+                any.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                If you buy the kit and ship something with it, tell us — your
+                product and your words are the first testimonial this page is
+                waiting for.
+              </p>
+              <div className="mt-6">
+                <Button href="/pricing">Get the kit →</Button>
+              </div>
+            </Card>
           </div>
         </section>
       </main>

@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import LoginForm from "./LoginForm";
+
+export const metadata: Metadata = {
+  title: "Log in",
+  description: "Log in to your SaaS Starter dashboard.",
+};
 
 /**
  * Server wrapper for the login form: it reads the server-only env

@@ -1,0 +1,29 @@
+This kit is deliberately boring about its stack. Every piece is a well-known tool doing the job it is best at, wired together the way the documentation says to wire it. Nothing here is clever; that is the point — a buyer should be able to read the code and know where to change things.
+
+## The stack
+
+- **Next.js 16 (App Router)** — pages, API routes, and server components in one project. The App Router is the current Next.js surface; the kit uses it the standard way, with `src/app/` holding every route.
+- **TypeScript (strict)** — every file is typed. `npm run typecheck` (`tsc --noEmit`) is part of the verification before every release.
+- **Tailwind CSS 3** — one brand colour scale in `tailwind.config.ts`. Change three values and the whole kit is yours.
+- **Auth.js (NextAuth v5)** — credentials (email + password, bcrypt-hashed), Google OAuth, and magic links. Sessions are signed JWTs; users, subscriptions and dashboard data live in the database.
+- **Prisma + PostgreSQL** — one Prisma schema, one seed file with clearly-labelled sample data. Locally it runs against any Postgres; in production the recommended host is Supabase's free tier.
+- **Polar or Stripe** — two checkout options, each with a verified webhook that activates the buyer's plan. Polar is the default.
+
+## Where things live
+
+| Area | Files |
+|---|---|
+| Pages | `src/app/` — landing, pricing, docs, blog, changelog, auth, dashboard |
+| Auth config | `src/auth.ts`, `src/lib/auth.ts`, `src/proxy.ts` |
+| Billing | `src/lib/polar.ts`, `src/lib/stripe.ts`, `src/app/api/checkout/`, `src/app/api/webhooks/` |
+| Email | `src/lib/email.ts` (Resend) |
+| Database | `prisma/schema.prisma`, `prisma/seed.ts`, `src/lib/db.ts` |
+| UI kit | `src/components/ui.tsx` — Button, Card, Badge, SectionHeading |
+
+## What was deliberately left out
+
+No admin panel, no multi-tenancy, no teams. Those belong in a different, B2B-priced product — the $29–$49 buyer is a solo maker, and every extra system is a week of work they will never use. The kit does one thing: get a solo maker from a clone to a live product page that can take money.
+
+## How to extend it
+
+Add a page under `src/app/`, add a table to `prisma/schema.prisma`, run `npm run db:push`, and read the dashboard page to see how data flows from the database to the screen. The `AGENTS.md` file at the repo root has the same tour in agent-readable form.

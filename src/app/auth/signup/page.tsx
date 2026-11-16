@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import SignupForm from "./SignupForm";
+
+export const metadata: Metadata = {
+  title: "Sign up",
+  description:
+    "Create your SaaS Starter account — free, no card required. Your account lives in your own database.",
+};
 
 /**
  * Server wrapper for the signup form: the "Continue with Google"

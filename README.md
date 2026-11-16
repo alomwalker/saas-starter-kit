@@ -7,7 +7,7 @@ customer table, settings that persist, and billing wired for **Polar**
 activates plans. Clone it, brand it, launch it.
 
 **Stack:** Next.js 16 (App Router) · TypeScript (strict) · Tailwind CSS 3 ·
-React 18 · Auth.js (NextAuth v5) · Prisma · PostgreSQL · bcryptjs.
+React 19 · Auth.js (NextAuth v5) · Prisma · PostgreSQL · bcryptjs.
 
 ## Quick start
 
@@ -29,9 +29,14 @@ Other commands: `npm run build`, `npm start`, `npm run typecheck`,
 
 | Area | Files |
 |---|---|
-| Landing page | `src/app/page.tsx` — hero, stats, feature grid |
+| Landing page | `src/app/page.tsx` — hero, stats, feature grid, honest testimonials section (empty until the first real buyer) |
 | Pricing page | `src/app/pricing/page.tsx` — Free / Starter $29 / Pro $49, buys via Polar or Stripe |
 | Docs | `src/app/docs/page.tsx` |
+| Blog | `src/app/blog/` — MDX blog (`src/content/blog/*.mdx`, rendered with `next-mdx-remote`), 3 starter posts |
+| Changelog | `src/app/changelog/page.tsx` — real releases only, dated as shipped |
+| SEO | `src/app/layout.tsx` (metadata + Open Graph), `src/app/sitemap.ts`, `src/app/robots.ts`, `src/lib/site.ts` (canonical URL) |
+| Agent rules | `AGENTS.md` + `.cursor/rules/repo.mdc` — setup, layout, and the hard lessons (session pooler, cookie name, force-dynamic auth pages) |
+| Lite version | `lite` branch — landing + auth + dashboard only, no billing, MIT license (see below) |
 | Auth | `src/auth.ts` (Auth.js config), `src/app/auth/login`, `src/app/auth/signup`, `src/app/auth/reset-password`, `src/lib/auth.ts`, `src/proxy.ts` |
 | Email | `src/lib/email.ts` — Resend: verification, password reset, welcome, magic links |
 | Database | `prisma/schema.prisma`, `prisma/seed.ts`, `src/lib/db.ts` |
@@ -225,6 +230,42 @@ onto Stripe's merchant-of-record service, which does not accept
 Bangladesh sellers). Do not open a PayPal/Stripe account with a foreign
 address, and do not form a US LLC just to get Stripe without
 professional advice.
+
+## Blog, changelog and SEO
+
+- **Blog** — `/blog` is an MDX blog. Posts live in
+  `src/content/blog/*.mdx` with their titles/dates in `src/lib/blog.ts`
+  and render at `/blog/<slug>` via `next-mdx-remote`. Three starter
+  posts ship with the kit (how the kit is built, Polar vs Stripe,
+  launch checklist). Add a post by dropping in a `.mdx` file and one
+  entry in `src/lib/blog.ts`.
+- **Changelog** — `/changelog` lists the real releases (v1, v2, Phase 1,
+  Phase 2), dated as shipped. Add a release there when you ship one —
+  never invent entries.
+- **SEO** — every page has metadata and Open Graph tags (see
+  `src/app/layout.tsx` and `src/lib/site.ts` for the canonical URL),
+  plus `/sitemap.xml` and `/robots.txt` routes. Set
+  `NEXT_PUBLIC_APP_URL` to your production domain so the tags point
+  at the right place.
+- **Testimonials** — the landing page has an honest empty state: no
+  testimonials and no customer count until the first real buyer exists.
+  Do not invent any.
+
+## Free Lite version
+
+The `lite` branch is the free MIT version: landing + auth + dashboard,
+no billing (no checkout routes, no webhooks, no billing page) and no
+Pro update promises. Its pricing page links to the paid kit instead of
+selling anything. It is a separate branch of this repo, not a separate
+repo — check it out with `git checkout lite`. Never merge billing back
+into it, and never merge its MIT license onto main.
+
+## Agent rules
+
+`AGENTS.md` (and `.cursor/rules/repo.mdc`) is the repo tour for AI
+coding agents: setup, commands, where auth/billing/database live, and
+the hard lessons (session pooler, session-cookie name, force-dynamic
+auth pages). Keep it accurate when the layout changes.
 
 ## Deploy
 

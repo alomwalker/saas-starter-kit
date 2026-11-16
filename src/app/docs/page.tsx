@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { Card } from "@/components/ui";
+
+export const metadata: Metadata = {
+  title: "Documentation",
+  description:
+    "Setup, auth, database, billing and deployment docs for the SaaS Starter Kit.",
+};
 
 const SECTIONS: Array<{ title: string; body: string[] }> = [
   {
@@ -14,7 +21,12 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
   {
     title: "Project layout",
     body: [
-      "src/app/ — App Router pages: landing (/), /pricing, /docs, /auth/*, /dashboard/*",
+      "src/app/ — App Router pages: landing (/), /pricing, /docs, /blog, /changelog, /auth/*, /dashboard/*",
+      "src/lib/site.ts — canonical site URL, name and description (metadata, sitemap, robots)",
+      "src/lib/blog.ts + src/content/blog/*.mdx — blog posts, rendered by /blog/[slug] with next-mdx-remote",
+      "src/app/sitemap.ts + src/app/robots.ts — /sitemap.xml and /robots.txt",
+      "AGENTS.md + .cursor/rules/repo.mdc — agent instructions: setup, layout, hard lessons",
+      "lite branch — the free MIT version: landing + auth + dashboard, no billing",
       "src/auth.ts — Auth.js (NextAuth v5) config: credentials, Google OAuth, magic links, JWT sessions",
       "src/lib/auth.ts — getSessionUser() used by pages",
       "src/lib/db.ts — PrismaClient singleton",
@@ -59,6 +71,15 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
       "Stripe webhooks POST to /api/webhooks/stripe — the signature is verified (HMAC-SHA256) and a completed Checkout Session activates the buyer's plan from its metadata; a refunded charge downgrades them to free.",
       "Set the webhook URLs (https://your-domain.com/api/webhooks/polar and /api/webhooks/stripe) and the matching secrets (POLAR_WEBHOOK_SECRET, STRIPE_WEBHOOK_SECRET).",
       "Fallback: Paddle is also a merchant of record — see README § Billing.",
+    ],
+  },
+  {
+    title: "Blog, SEO and changelog",
+    body: [
+      "Every page has metadata + Open Graph tags (see src/lib/site.ts for the canonical URL); /sitemap.xml and /robots.txt are generated routes.",
+      "The blog at /blog is MDX: add a .mdx file to src/content/blog/ and one entry to src/lib/blog.ts — the post renders at /blog/<slug>.",
+      "The changelog at /changelog lists real releases only, dated as shipped. Add an entry when you ship; never invent one.",
+      "The landing page's testimonials section is an honest empty state — no testimonials and no customer count until the first real buyer exists.",
     ],
   },
   {
