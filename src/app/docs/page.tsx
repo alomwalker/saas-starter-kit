@@ -46,6 +46,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
       "Login checks the hash (or the OAuth / magic-link flow) and issues a signed JWT session (AUTH_SECRET).",
       "Auth.js Credentials only supports JWT sessions — that is why sessions are JWT, while users, subscriptions and dashboard data live in the database.",
       "Signup sends a verification email (24h link); password reset is at /auth/reset-password (1h single-use token). Both need RESEND_API_KEY — without it, auth still works and the email steps report \"not configured\".",
+      "Signed-in users can change their password from /dashboard/settings (current password + new password, minimum 8 characters). Google-only and magic-link accounts have no password — they set one through the password-reset flow.",
       "A Google sign-in can never take over an existing password account with the same email — it is rejected (OAuthAccountNotLinked).",
       "There is no demo login in this kit. Set AUTH_SECRET to a long random value (openssl rand -base64 32).",
     ],
