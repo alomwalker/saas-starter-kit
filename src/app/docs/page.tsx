@@ -19,7 +19,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
       "src/lib/auth.ts — getSessionUser() used by pages",
       "src/lib/db.ts — PrismaClient singleton",
       "src/lib/polar.ts — Polar checkout (merchant of record)",
-      "prisma/schema.prisma — database schema (SQLite by default)",
+      "prisma/schema.prisma — database schema (PostgreSQL)",
       "prisma/seed.ts — sample customers, revenue and settings (labelled sample data)",
       "src/middleware.ts — protects /dashboard by validating the Auth.js session token",
     ],
