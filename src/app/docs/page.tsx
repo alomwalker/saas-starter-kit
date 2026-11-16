@@ -101,6 +101,15 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
     ],
   },
   {
+    title: "Waitlist",
+    body: [
+      "The landing page has a waitlist form (POST /api/waitlist with { email, name? }). Signups are stored in the WaitlistSignup table (email unique) and listed newest-first on the dashboard, with a CSV export at GET /api/waitlist/export.",
+      "The kit never emails waitlist signups itself — the seller exports the list from the dashboard and mails it from their own tool at launch. There is no automated launch email in the kit.",
+      "POST /api/waitlist answers 200 on success, 409 if the email is already on the list, 400 for a missing or invalid email. It is rate-limited to 10 requests per minute per IP (see § Rate limiting).",
+      "Waitlist emails are stored lowercased and trimmed; a name is optional and stored as given.",
+    ],
+  },
+  {
     title: "Deploy",
     body: [
       "Vercel: import the repo, set the same env vars, deploy. Any Node host works too: npm run build && npm start (Node ≥ 20.9).",
