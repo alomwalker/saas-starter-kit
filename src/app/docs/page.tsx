@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Card } from "@/components/ui";
+import DocsSearch from "./DocsSearch";
 
 export const metadata: Metadata = {
   title: "Documentation",
@@ -127,33 +127,7 @@ export default function DocsPage() {
         <p className="mt-3 text-lg text-slate-600">
           Everything you need to run, brand, and launch this starter kit.
         </p>
-        <div className="mt-10 space-y-4">
-          {SECTIONS.map((s) => (
-            <Card key={s.title} className="p-6">
-              <h2 className="text-lg font-semibold text-slate-900">{s.title}</h2>
-              <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-slate-700">
-                {s.body.map((line) => (
-                  <li key={line} className="font-mono text-[13px]">{line}</li>
-                ))}
-              </ul>
-            </Card>
-          ))}
-        </div>
-        <Card className="mt-6 p-6">
-          <h2 className="text-lg font-semibold text-slate-900">Deploy to Vercel</h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            One click imports this repo into Vercel. You still have to
-            set the env vars and the build command from the Deploy
-            section above — without them the deploy builds and then
-            fails at runtime.
-          </p>
-          <a
-            href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Falomwalker%2Fsaas-starter-kit"
-            className="mt-4 inline-block rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
-          >
-            ▲ Deploy to Vercel
-          </a>
-        </Card>
+        <DocsSearch sections={SECTIONS} />
       </main>
     </div>
   );
