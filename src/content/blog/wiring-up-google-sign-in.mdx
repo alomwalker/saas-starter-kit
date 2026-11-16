@@ -1,0 +1,79 @@
+Google sign-in is the kit's second login option, next to email +
+password. It is optional — the kit works with credentials alone —
+and it is only offered when you configure it. The provider lives
+in `src/auth.ts`, and the login and signup pages check the same
+env vars before showing the button.
+
+## 1. Create the OAuth client
+
+In Google Cloud Console, create a project (or use an existing
+one), enable the Google Identity APIs, and create an OAuth 2.0
+client ID of type **Web application**. Add your app's origin to
+the authorized JavaScript origins (for local testing,
+`http://localhost:3000`) and the Auth.js callback URL to the
+authorized redirect URIs:
+`http://localhost:3000/api/auth/callback/google` — and the same
+path on your production domain once deployed.
+
+Copy the client ID and client secret into `.env` (and into
+Vercel, for Production and Preview):
+
+- `AUTH_GOOGLE_ID`
+- `AUTH_GOOGLE_SECRET`
+
+That is all the kit needs. There is no other Google setup in the
+code.
+
+## 2. The button appears only when the keys exist
+
+In `src/auth.ts`, the Google provider is registered only when
+both env vars are set. The login and signup pages do the same
+check (`googleEnabled`) before rendering the "Continue with
+Google" button. Without the keys, there is no button and no
+provider — a buyer who has not configured Google never sees a
+dead sign-in option.
+
+Both pages are `force-dynamic`, so they read the env vars at
+request time: if you add the Google keys after deploying, the
+button shows up without a rebuild.
+
+## 3. What happens on sign-in
+
+Auth.js handles the OAuth flow and the Prisma adapter creates
+the `User` and `Account` rows on first sign-in. Sessions stay
+JWT, exactly like credentials sign-in — Google only changes how
+the user proves who they are, not how the session works.
+
+One rule to know before you enable it: a Google sign-in can
+never take over an existing password account with the same email.
+Auth.js rejects it with `OAuthAccountNotLinked` — the Google
+account does not silently steal the password account. That is
+deliberate and it is documented in `src/auth.ts`: anyone who
+controls a Google account with your email could otherwise take
+over the account. A user in that situation signs in with their
+password instead.
+
+## 4. Google-only accounts have no password
+
+An account created through Google has `passwordHash` set to null
+in the database, so it cannot log in with credentials — the
+credentials provider returns null for it. That is expected, not a
+bug.
+
+If such a user wants a password, they use "Forgot password?" on
+the login page: the reset flow sends a link to their email, and
+choosing a new password sets the hash. After that, the same
+account can sign in either way. Signed-in users can also change
+their password from `/dashboard/settings` — but only if the
+account already has one; the settings page says so instead of
+showing a form that cannot work.
+
+## 5. The mistake that bites
+
+**Redirect URI mismatch.** If Google answers with
+`redirect_uri_mismatch` after sign-in, the URI in your Google
+Cloud client does not exactly match what Auth.js sent — check
+the scheme (`http` vs `https`), the domain, and the full
+`/api/auth/callback/google` path. It is the most common Google
+setup error, and it is always the console configuration, never
+the kit's code.

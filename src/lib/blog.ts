@@ -39,6 +39,20 @@ export const BLOG_POSTS: BlogPostMeta[] = [
     excerpt:
       "Create the route, add the nav link, fetch with Prisma — and why a page under /dashboard is signed-in-only with no extra auth code.",
   },
+  {
+    slug: "setting-up-email-with-resend",
+    title: "Setting up email with Resend",
+    date: "2026-11-16",
+    excerpt:
+      "One API key, a verified sending domain, and four branded emails — plus why nothing crashes when the key is missing.",
+  },
+  {
+    slug: "wiring-up-google-sign-in",
+    title: "Wiring up Google sign-in",
+    date: "2026-11-16",
+    excerpt:
+      "An OAuth client, two env vars, and the account-linking rule that keeps a Google sign-in from taking over a password account.",
+  },
 ];
 
 export function getPost(slug: string): BlogPostMeta | undefined {
