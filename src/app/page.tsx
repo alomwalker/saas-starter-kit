@@ -53,13 +53,13 @@ export default function LandingPage() {
       <Nav />
       <main>
         <section className="mx-auto max-w-6xl px-6 py-20 text-center">
-          <Badge tone="brand">Next.js 14 · TypeScript · Tailwind CSS</Badge>
+          <Badge tone="brand">Next.js 16 · TypeScript · Tailwind CSS</Badge>
           <h1 className="mx-auto mt-6 max-w-3xl text-5xl font-bold tracking-tight text-slate-900">
             Ship your SaaS in days, not months
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
             A production-ready starter kit with a landing page, auth, a
-            dashboard, and billing wired for Polar. Clone it, brand it,
+            dashboard, and billing wired for Polar or Stripe. Clone it, brand it,
             launch it.
           </p>
           <div className="mt-8 flex justify-center gap-3">
@@ -91,9 +91,9 @@ export default function LandingPage() {
           />
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {[
-              { title: "Landing + pricing pages", body: "A polished marketing site with a pricing table that links straight into Polar checkout." },
-              { title: "Auth, wired", body: "Login and signup with Auth.js — email + password, bcrypt-hashed and stored in your database. No demo login, no external account needed." },
-              { title: "Dashboard + billing", body: "Stats, revenue chart, customer table, and a billing page that creates real Polar checkout sessions." },
+              { title: "Landing + pricing pages", body: "A polished marketing site with a pricing table that links straight into Polar or Stripe checkout." },
+              { title: "Auth, wired", body: "Login and signup with Auth.js — email + password (bcrypt-hashed), Google sign-in, and magic links. Password reset and email verification included. No demo login." },
+              { title: "Dashboard + billing", body: "Stats, revenue chart, customer table, and a billing page that creates real Polar or Stripe checkout sessions." },
               { title: "TypeScript, end to end", body: "Strict types, path aliases (@/*), and a clean src/ layout your buyers can extend without guessing." },
               { title: "Tailwind, ready to theme", body: "One brand colour scale in tailwind.config.ts — change three values and the whole kit is yours." },
               { title: "Docs included", body: "A /docs page covering setup, auth, billing, and deployment, so buyers are never stuck." },

@@ -3,12 +3,11 @@
 A production-ready starter kit for building a SaaS product: landing page,
 pricing, real auth, a database-backed dashboard with stats / revenue chart /
 customer table, settings that persist, and billing wired for **Polar**
-(merchant of record) including a verified webhook that activates plans.
-Clone it, brand it, launch it.
+(merchant of record) **or Stripe**, each with a verified webhook that
+activates plans. Clone it, brand it, launch it.
 
-**Stack:** Next.js 14 (App Router) · TypeScript (strict) · Tailwind CSS 3 ·
-React 18 · Auth.js (NextAuth v5) · Prisma · SQLite by default (Postgres for
-production) · bcryptjs.
+**Stack:** Next.js 16 (App Router) · TypeScript (strict) · Tailwind CSS 3 ·
+React 18 · Auth.js (NextAuth v5) · Prisma · PostgreSQL · bcryptjs.
 
 ## Quick start
 
@@ -31,35 +30,78 @@ Other commands: `npm run build`, `npm start`, `npm run typecheck`,
 | Area | Files |
 |---|---|
 | Landing page | `src/app/page.tsx` — hero, stats, feature grid |
-| Pricing page | `src/app/pricing/page.tsx` — Free / Starter $29 / Pro $49, buys via Polar |
+| Pricing page | `src/app/pricing/page.tsx` — Free / Starter $29 / Pro $49, buys via Polar or Stripe |
 | Docs | `src/app/docs/page.tsx` |
-| Auth | `src/auth.ts` (Auth.js config), `src/app/auth/login`, `src/app/auth/signup`, `src/lib/auth.ts`, `src/middleware.ts` |
+| Auth | `src/auth.ts` (Auth.js config), `src/app/auth/login`, `src/app/auth/signup`, `src/app/auth/reset-password`, `src/lib/auth.ts`, `src/proxy.ts` |
+| Email | `src/lib/email.ts` — Resend: verification, password reset, welcome, magic links |
 | Database | `prisma/schema.prisma`, `prisma/seed.ts`, `src/lib/db.ts` |
 | Dashboard | `src/app/dashboard/` — overview (from the DB), billing, settings (persisted); sidebar layout |
-| Billing | `src/lib/polar.ts`, `src/app/api/checkout/route.ts`, `src/app/api/webhooks/polar/route.ts` |
+| Billing | `src/lib/polar.ts` + `src/lib/stripe.ts`, `src/app/api/checkout/route.ts`, `src/app/api/webhooks/polar/route.ts`, `src/app/api/webhooks/stripe/route.ts` |
 | UI kit | `src/components/ui.tsx` — Button, Card, Badge, SectionHeading |
 
 ## Auth
 
-Auth.js (NextAuth v5) with a **credentials provider** — no external
-account signup is needed. Signup creates a `User` row; the password is
-stored as a **bcrypt hash** (12 rounds), never in plain text. Login
-checks the hash and issues a signed JWT session (`AUTH_SECRET`).
+Auth.js (NextAuth v5) with **three sign-in options** (see `src/auth.ts`):
+
+1. **Email + password (credentials)** — always on, no external account
+   signup needed. Signup creates a `User` row; the password is stored
+   as a **bcrypt hash** (12 rounds), never in plain text. Login checks
+   the hash and issues a signed JWT session (`AUTH_SECRET`).
+2. **Google** — OAuth via the seller's own Google Cloud client
+   (`AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET`). The button only appears
+   when both are set; otherwise the provider is not registered.
+3. **Magic link** — a sign-in link emailed via Resend
+   (`RESEND_API_KEY`). The link only appears when Resend is
+   configured. It needs the Prisma adapter (tokens live in
+   `VerificationToken`); sessions stay JWT.
 
 Sessions are JWT, deliberately: Auth.js's Credentials provider only
 supports JWT sessions — database sessions are incompatible with it
 (Auth.js docs). Users, subscriptions and all dashboard data still live
 in the database; only the session token itself is a signed JWT. The
-Prisma adapter is wired so the Auth.js tables exist for future OAuth
-providers. `src/middleware.ts` validates the JWT on every `/dashboard`
-request; the dashboard layout re-checks the session server-side.
+Prisma adapter is wired so the Auth.js tables exist for the OAuth and
+magic-link providers. `src/proxy.ts` (Next.js 16 renamed the old
+`middleware.ts` convention to `proxy`) validates the JWT on every
+`/dashboard` request; the dashboard layout re-checks the session
+server-side.
+
+**Email verification:** signup sends a verification link (24h, single
+use). Login is NOT blocked while the email is unverified — the link
+only records the verification. **Password reset** is built in
+(`/auth/reset-password`, 1h single-use token, hashed before storage);
+the request endpoint never reveals whether an account exists.
+
+**Account linking — the safe default is kept on purpose.** A Google
+sign-in whose email already belongs to a password account is rejected
+(`OAuthAccountNotLinked`) — Google does NOT silently take over that
+account. A Google-created account has no password (`passwordHash` is
+null) and cannot log in with credentials until a password is set via
+the reset flow. Only enable `allowDangerousEmailAccountLinking` in
+`src/auth.ts` if you understand the trade-off (see the comment there).
 
 There is no demo user and no demo login anywhere in this kit.
 
+## Email
+
+Transactional email via **Resend** (`src/lib/email.ts`) — one key,
+`RESEND_API_KEY`, powers the magic-link provider, the signup
+verification email, the welcome email and password reset
+(`EMAIL_FROM` sets the sender). If the key is missing, auth keeps
+working and the email steps report "not configured" instead of
+crashing.
+
+Resend's free tier covers 100 emails/day. Until you verify your own
+sending domain in Resend, mail goes from `onboarding@resend.dev` and
+Resend only delivers to your own Resend account email — verify a
+domain before launch or your users' verification and reset emails
+will not arrive.
+
 ## Database
 
-Prisma. **SQLite by default** — `DATABASE_URL="file:./dev.db"` in `.env`,
-created by `npm run db:setup`. No cloud account needed to run it locally.
+Prisma with **PostgreSQL**. Set `DATABASE_URL` to your Postgres
+connection string in `.env`, then `npx prisma generate` and
+`npm run db:push` (or `npm run db:setup` for push + seed). Supabase
+is the recommended free host — see the production steps below.
 
 Models: `User`, `Customer`, `Subscription`, `MonthlyRevenue`, `Setting`,
 plus the Auth.js `Account` / `Session` / `VerificationToken` tables.
@@ -77,14 +119,12 @@ before launch (`prisma db seed` is idempotent — it upserts).
 **Production Postgres (Supabase is the recommended free host):**
 
 1. Create a Supabase project (free tier) and copy its Postgres
-   connection string (use the pooled / transaction-mode string for
-   serverless hosts like Vercel).
-2. Copy `prisma/schema.postgres.prisma` over `prisma/schema.prisma`
-   (the models are identical — only the `provider` line changes).
-3. In `.env`, set `DATABASE_URL` to the Postgres connection string.
-4. Run `npx prisma generate && npm run db:push && npm run db:seed`.
-5. On Vercel, set the same `DATABASE_URL` env var — the SQLite file
-   does not persist on serverless hosts, so do not use SQLite there.
+   connection string. For serverless hosts like Vercel, use the
+   **session pooler** (port 5432) — the transaction pooler (6543)
+   breaks Prisma at runtime (`prepared statement already exists`).
+2. In `.env`, set `DATABASE_URL` to the Postgres connection string.
+3. Run `npx prisma generate && npm run db:push && npm run db:seed`.
+4. On Vercel, set the same `DATABASE_URL` env var.
 
 ## Billing — Polar (primary)
 
@@ -132,6 +172,42 @@ Unknown event types and unknown product IDs are acknowledged and
 ignored. If no account exists for the buyer's email, the event is
 acknowledged but nothing is activated (an account must exist first).
 
+## Billing — Stripe (second option)
+
+Stripe is offered next to Polar because most SaaS buyers already have
+a Stripe account — if they want Stripe, they should not have to rewire
+billing themselves. The two options differ: Polar is a merchant of
+record (it is the legal seller and handles tax); Stripe is a payment
+processor (the seller is the legal seller and Stripe pays out to the
+seller's own bank). The buyer picks on `/pricing` or
+`/dashboard/billing`; Polar is the default.
+
+No Stripe products need pre-creating: checkout (`src/lib/stripe.ts`)
+uses inline `price_data` (amount + currency + plan name) and carries
+the plan in the Checkout Session metadata. Only two keys are needed:
+
+```
+STRIPE_SECRET_KEY=<from the Stripe dashboard, Developers → API keys>
+STRIPE_WEBHOOK_SECRET=<from the Stripe dashboard, Developers → Webhooks → the endpoint secret>
+```
+
+Set the webhook URL in Stripe to
+`https://your-domain.com/api/webhooks/stripe` and listen for
+`checkout.session.completed` (and `charge.refunded`).
+Without the keys, Stripe checkout returns a clear configuration error
+and Polar stays the only option.
+
+**Webhook — implemented** (`src/app/api/webhooks/stripe/route.ts`):
+the Stripe signature is verified by hand with node:crypto
+(HMAC-SHA256 over `<timestamp>.<raw body>`, 5-minute replay window)
+and returns 401 on a bad signature. On
+`checkout.session.completed` with `payment_status: paid` it looks the
+buyer up by the session's customer email, reads the plan from the
+session metadata and activates it in the database; on
+`charge.refunded` it marks the subscription cancelled and downgrades
+the user to the free plan. Unknown events and sessions with no plan
+in metadata are acknowledged and ignored.
+
 ## Billing — Paddle (fallback)
 
 Paddle is also a merchant of record and lists Bangladesh as supported
@@ -155,7 +231,7 @@ professional advice.
 - **Vercel (recommended):** import the repo, set the same env vars,
   deploy. Set `NEXT_PUBLIC_APP_URL` to the production domain. Use
   Postgres (Supabase) — see § Database.
-- **Any Node host:** `npm run build && npm start` (Node ≥ 18.17).
+- **Any Node host:** `npm run build && npm start` (Node ≥ 20.9).
 
 ## Customising for your buyers
 
@@ -166,8 +242,9 @@ professional advice.
   `src/app/pricing/page.tsx`.
 - Data: seed data lives in `prisma/seed.ts` — delete or replace it;
   the dashboard queries the database, so no code change is needed.
-- Auth providers: add OAuth providers in `src/auth.ts` (the Prisma
-  adapter tables already exist).
+- Auth providers: Google and magic links are built in (see § Auth);
+  add more OAuth providers in `src/auth.ts` (the Prisma adapter
+  tables already exist).
 
 ## What is still missing before it can be listed for sale
 
@@ -177,16 +254,18 @@ professional advice.
    video, a license file (see `LICENSE.md` — add one before selling),
    and a support email address. See `DEMO_PLAN.md`.
 3. **A production database** — run the Postgres steps in § Database
-   before deploying (SQLite is for local dev only).
+   before deploying.
 
-Auth, the database, the Polar webhook and settings persistence are done.
+Auth, the database, the Polar and Stripe webhooks, email and settings
+persistence are done.
 
 ## Honest limits
 
 - No income is guaranteed; the median digital product earns little.
   This kit is a starting point, not a business.
-- Checkout and the webhook were verified only as far as the
-  configuration / signature paths (no Polar account exists, so no real
-  payment was tested — see the verification notes in the delivery).
+- Checkout and the webhooks were verified only as far as the
+  configuration / signature paths (no Polar or Stripe account with
+  real keys exists in this repo, so no real payment was tested —
+  see the verification notes in the delivery).
 - The seed dashboard figures are fictional sample data, labelled as
   such; they are not real revenue.

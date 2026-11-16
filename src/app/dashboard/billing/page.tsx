@@ -11,6 +11,7 @@ function BillingInner() {
   const success = params.get("checkout") === "success";
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<BillingPlan | null>(null);
+  const [provider, setProvider] = useState<"polar" | "stripe">("polar");
 
   async function buy(plan: BillingPlan) {
     setError(null);
@@ -18,7 +19,7 @@ function BillingInner() {
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan }),
+      body: JSON.stringify({ plan, provider }),
     });
     const data = (await res.json()) as { url?: string; error?: string };
     setBusy(null);
@@ -32,10 +33,28 @@ function BillingInner() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-slate-900">Billing</h1>
-      <p className="mt-1 text-slate-600">Manage your plan. Checkout is handled by Polar (merchant of record).</p>
+      <p className="mt-1 text-slate-600">Manage your plan. Checkout is handled by Polar (merchant of record) or Stripe.</p>
+      <div className="mt-4 flex items-center gap-2 text-sm">
+        <span className="text-slate-600">Pay with:</span>
+        {(["polar", "stripe"] as const).map((p) => (
+          <button
+            key={p}
+            type="button"
+            onClick={() => setProvider(p)}
+            aria-pressed={provider === p}
+            className={
+              provider === p
+                ? "rounded-full bg-brand-600 px-4 py-1.5 font-medium text-white"
+                : "rounded-full border border-slate-300 bg-white px-4 py-1.5 font-medium text-slate-700 hover:bg-slate-50"
+            }
+          >
+            {p === "polar" ? "Polar" : "Stripe"}
+          </button>
+        ))}
+      </div>
       {success ? (
         <p className="mt-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">
-          Payment received — thank you. Your plan is activated automatically by the Polar webhook once Polar confirms the payment.
+          Payment received — thank you. Your plan is activated automatically by the Polar or Stripe webhook once the payment is confirmed.
         </p>
       ) : null}
       {error ? (

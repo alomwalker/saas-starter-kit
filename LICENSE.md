@@ -3,9 +3,10 @@
 Copyright (c) 2026 David. All rights reserved.
 
 This is a single-buyer commercial license for the Next.js SaaS Starter Kit
-(landing page, pricing page, docs, Auth.js login/signup, Prisma database,
+(landing page, pricing page, docs, Auth.js login/signup with email +
+password, Google sign-in and magic links, Prisma database,
 dashboard with stats / revenue chart / customer table, settings, and Polar
-checkout + webhook).
+or Stripe checkout + webhooks).
 
 ## What the buyer MAY do
 
@@ -29,9 +30,12 @@ checkout + webhook).
 The price is for the license to use the code, not for a finished business.
 No income is guaranteed.
 
+**14-day money-back guarantee:** a full refund within 14 days of purchase,
+no questions asked — see § Refunds below.
+
 ## Support and updates
 
-- Support is by email for installation and setup questions for 30 days after purchase.
+- Support is by email at alomwalker21@gmail.com for installation and setup questions for 30 days after purchase.
 - Bug fixes to the version bought are included. New features are not promised.
 
 ## Warranty
@@ -39,11 +43,13 @@ No income is guaranteed.
 The kit is provided "as is", without warranty of any kind. The seller is not
 liable for lost profits, lost data, or any other loss from using the kit.
 
-## Refunds
+## Refunds — 14-day money-back guarantee
 
-Because this is downloadable source code, refunds are given only if the
-downloaded files are corrupt or materially different from what was described.
-Contact support within 7 days of purchase with the order details.
+If the kit isn't what you expected, ask for a full refund within 14 days
+of purchase — no questions asked. Contact support at
+alomwalker21@gmail.com with the order details and the money is returned
+in full. After 14 days, refunds are given only if the downloaded files
+are corrupt or materially different from what was described.
 
 ---
 *This is a standard template license for a paid starter kit, not legal advice.

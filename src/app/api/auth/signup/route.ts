@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { sendVerificationEmail, sendWelcomeEmail } from "@/lib/email";
 
 /**
  * Real signup: creates a User row with a bcrypt-hashed password.
  * The password is never stored in plain text and never returned.
  * After signup the client signs the user in via Auth.js
  * (signIn("credentials")) — this route does not issue a session.
+ *
+ * If email is configured (RESEND_API_KEY), a verification link and
+ * a welcome email are sent. If it is not configured, signup still
+ * succeeds — the response reports emailSent: false so the client
+ * can say so plainly instead of pretending a mail went out.
+ * Login is NOT blocked while the email is unverified (README § Auth).
  */
 export async function POST(req: Request) {
   const { name, email, password } = (await req.json()) as {
@@ -42,5 +49,13 @@ export async function POST(req: Request) {
   await prisma.user.create({
     data: { name: cleanName, email: cleanEmail, passwordHash, plan: "free" },
   });
-  return NextResponse.json({ ok: true });
+
+  const verification = await sendVerificationEmail({ name: cleanName, email: cleanEmail });
+  if (!verification.ok) {
+    console.error("[signup] verification email not sent:", verification.error);
+  } else {
+    const welcome = await sendWelcomeEmail({ name: cleanName, email: cleanEmail });
+    if (!welcome.ok) console.error("[signup] welcome email not sent:", welcome.error);
+  }
+  return NextResponse.json({ ok: true, emailSent: verification.ok });
 }

@@ -8,13 +8,18 @@ import { getToken } from "next-auth/jwt";
  * /auth/login with ?next= so they land back on the page they asked
  * for after logging in.
  *
+ * Next.js 16 renamed the middleware convention to "proxy" (it runs
+ * on the Node.js runtime, not the edge runtime — which is fine
+ * here, getToken needs Node crypto). The file is src/proxy.ts
+ * and the export is `proxy`.
+ *
  * Cookie name depends on the scheme: Auth.js sets
  * "__Secure-authjs.session-token" over HTTPS and
  * "authjs.session-token" over plain HTTP, and getToken only finds
  * the token when the cookie name (which also salts the decryption
  * key) matches, so pick the name from the cookies actually present.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (!pathname.startsWith("/dashboard")) return NextResponse.next();
 

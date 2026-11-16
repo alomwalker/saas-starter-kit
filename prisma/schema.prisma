@@ -1,14 +1,12 @@
-// Prisma schema — SQLite by default (works out of the box, no cloud account).
-// For production Postgres (Supabase is the recommended free host), use
-// prisma/schema.postgres.prisma instead: copy it over this file, set
-// DATABASE_URL to your Postgres connection string, then re-run
-// `npx prisma generate` and `npm run db:push`. The models are identical;
-// only the provider line changes. See README § Database.
+// Prisma schema — PostgreSQL (Supabase is the recommended free host;
+// see README § Database). Set DATABASE_URL to your Postgres
+// connection string, then run `npx prisma generate` and
+// `npm run db:push`.
 //
 // This kit is single-workspace: the signed-in user is the workspace owner,
 // and Customer / MonthlyRevenue / Setting rows are workspace data (seeded
 // sample data is clearly labelled in prisma/seed.ts). A User's plan is
-// their own subscription plan, activated by the Polar webhook.
+// their own subscription plan, activated by the Polar or Stripe webhook.
 
 generator client {
   provider = "prisma-client-js"
@@ -44,9 +42,19 @@ model User {
   name         String
   email        String         @unique
   // bcrypt hash of the password. Never store a plain-text password.
+  // Nullable: accounts created by Google sign-in have no password
+  // until the user sets one (see README § Auth). The credentials
+  // provider rejects a null hash — a Google-only account cannot
+  // log in with a password it never set.
   // Accounts created by the seed script have an unusable random hash
   // and cannot be logged into — there is no demo login in this kit.
-  passwordHash String
+  passwordHash String?
+  // Set when the user clicks the verification link sent at signup.
+  // Used by the Auth.js adapter; login is NOT blocked while it is
+  // null (see README § Auth).
+  emailVerified DateTime?
+  // Avatar URL from the OAuth provider (Google), if any.
+  image        String?
   plan         Plan           @default(free)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
@@ -74,6 +82,8 @@ model Subscription {
   status              SubscriptionStatus @default(trialing)
   polarSubscriptionId String?            @unique
   polarCustomerId     String?
+  stripeCheckoutSessionId String?        @unique
+  stripeCustomerId    String?
   currentPeriodEnd    DateTime?
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt

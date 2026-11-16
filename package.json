@@ -1,19 +1,21 @@
 {
   "dependencies": {
-    "@auth/prisma-adapter": "^2.7.4",
+    "@auth/prisma-adapter": "^2.11.3",
     "@prisma/client": "^6.14.0",
     "bcryptjs": "^3.0.3",
-    "next": "^14.2.35",
-    "next-auth": "^5.0.0-beta.29",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "next": "^16.4.6",
+    "next-auth": "^5.0.0-beta.32",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "resend": "^6.38.1",
+    "stripe": "^23.1.0"
   },
-  "description": "Production-ready SaaS dashboard / admin starter kit — Next.js App Router, TypeScript, Tailwind CSS, Auth.js auth, Prisma database, billing via Polar (merchant of record).",
+  "description": "Production-ready SaaS dashboard / admin starter kit — Next.js App Router, TypeScript, Tailwind CSS, Auth.js auth, Prisma database, billing via Polar (merchant of record) or Stripe.",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "20.14.12",
-    "@types/react": "18.3.3",
-    "@types/react-dom": "18.3.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "autoprefixer": "10.4.20",
     "postcss": "8.4.40",
     "prisma": "^6.14.0",
@@ -22,7 +24,7 @@
     "typescript": "5.5.4"
   },
   "engines": {
-    "node": ">=18.17"
+    "node": ">=20.9"
   },
   "license": "UNLICENSED",
   "name": "saas-dashboard-starter",
@@ -30,7 +32,6 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "next lint",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",

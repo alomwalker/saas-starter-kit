@@ -124,10 +124,15 @@ export async function POST(req: Request) {
 
   if (cancelling.has(type)) {
     const status = type === "subscription.canceled" ? "canceled" : "revoked";
+    // Keyed on userId, not on the Polar subscription id: a user has
+    // exactly one Subscription row in this kit (userId is @unique),
+    // and the row may already exist from a Stripe purchase. Keying
+    // on polarSubscriptionId would try to create a second row for
+    // the same user and fail with a unique-constraint error.
     if (data.id) {
       await prisma.subscription.upsert({
-        where: { polarSubscriptionId: data.id },
-        update: { status },
+        where: { userId: user.id },
+        update: { status, polarSubscriptionId: data.id, polarCustomerId: data.customer_id ?? data.customer?.id },
         create: {
           userId: user.id,
           plan: user.plan,
@@ -158,12 +163,15 @@ export async function POST(req: Request) {
   const periodEnd = data.current_period_end ? new Date(data.current_period_end) : undefined;
 
   if (data.id && type.startsWith("subscription.")) {
+    // Keyed on userId (see the cancel path above): one Subscription
+    // row per user, whatever the provider. The Polar subscription id
+    // is recorded on the row, not used as its key.
     await prisma.subscription.upsert({
-      where: { polarSubscriptionId: data.id },
+      where: { userId: user.id },
       update: {
-        userId: user.id,
         plan,
         status,
+        polarSubscriptionId: data.id,
         polarCustomerId: data.customer_id ?? data.customer?.id,
         currentPeriodEnd: periodEnd,
       },
