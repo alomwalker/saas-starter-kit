@@ -104,6 +104,9 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
     title: "Deploy",
     body: [
       "Vercel: import the repo, set the same env vars, deploy. Any Node host works too: npm run build && npm start (Node ≥ 20.9).",
+      "One-click deploy: https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Falomwalker%2Fsaas-starter-kit — it imports the repo, but you still have to set the env vars below and the build command, or the deploy builds and then fails at runtime.",
+      "Env vars to set (Production and Preview): AUTH_SECRET, NEXT_PUBLIC_APP_URL, DATABASE_URL and DIRECT_URL (Supabase session pooler, port 5432), POLAR_ORGANIZATION_ID, POLAR_PRODUCT_ID_STARTER, POLAR_PRODUCT_ID_PRO, POLAR_ACCESS_TOKEN, POLAR_WEBHOOK_SECRET. Optional: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, EMAIL_FROM, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, NEXT_PUBLIC_PLAUSIBLE_DOMAIN.",
+      "Build command: prisma generate && DATABASE_URL=$DIRECT_URL prisma db push --accept-data-loss && prisma db seed && next build, plus the env var CI=true (Next.js 16's build fails on Vercel without it).",
       "Set NEXT_PUBLIC_APP_URL to your production domain before launch.",
       "On Vercel, use Postgres (Supabase) with the session pooler (port 5432).",
     ],
@@ -136,6 +139,21 @@ export default function DocsPage() {
             </Card>
           ))}
         </div>
+        <Card className="mt-6 p-6">
+          <h2 className="text-lg font-semibold text-slate-900">Deploy to Vercel</h2>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            One click imports this repo into Vercel. You still have to
+            set the env vars and the build command from the Deploy
+            section above — without them the deploy builds and then
+            fails at runtime.
+          </p>
+          <a
+            href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Falomwalker%2Fsaas-starter-kit"
+            className="mt-4 inline-block rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+          >
+            ▲ Deploy to Vercel
+          </a>
+        </Card>
       </main>
     </div>
   );
