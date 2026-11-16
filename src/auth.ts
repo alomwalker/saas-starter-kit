@@ -5,6 +5,7 @@ import Resend from "next-auth/providers/resend";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { sendMagicLinkEmail } from "@/lib/email";
 
 /**
  * Real auth for the starter kit — Auth.js (NextAuth v5).
@@ -99,6 +100,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             from:
               process.env.EMAIL_FROM?.trim() ||
               "SaaS Starter <onboarding@resend.dev>",
+            // Branded magic-link email (src/lib/email.ts) instead of
+            // Auth.js's plain default. Throws on failure so Auth.js
+            // surfaces the error instead of pretending it sent.
+            async sendVerificationRequest({ identifier, url }) {
+              await sendMagicLinkEmail(identifier, url);
+            },
           }),
         ]
       : []),
