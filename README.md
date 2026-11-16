@@ -47,7 +47,7 @@ Other commands: `npm run build`, `npm start`, `npm run typecheck`,
 | Auth | `src/auth.ts` (Auth.js config), `src/app/auth/login`, `src/app/auth/signup`, `src/app/auth/reset-password`, `src/lib/auth.ts`, `src/proxy.ts` |
 | Email | `src/lib/email.ts` — Resend: verification, password reset, welcome, magic links |
 | Database | `prisma/schema.prisma`, `prisma/seed.ts`, `src/lib/db.ts` |
-| Dashboard | `src/app/dashboard/` — overview (from the DB), billing, settings (persisted); sidebar layout |
+| Dashboard | `src/app/dashboard/` — overview (from the DB: add/delete customers, CSV export, waitlist list), billing, settings (persisted); sidebar layout |
 | Billing | `src/lib/polar.ts` + `src/lib/stripe.ts`, `src/app/api/checkout/route.ts`, `src/app/api/webhooks/polar/route.ts`, `src/app/api/webhooks/stripe/route.ts` |
 | UI kit | `src/components/ui.tsx` — Button, Card, Badge, SectionHeading |
 

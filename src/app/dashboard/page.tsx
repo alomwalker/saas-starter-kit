@@ -1,4 +1,6 @@
 import { Badge, Card } from "@/components/ui";
+import AddCustomerForm from "@/components/add-customer-form";
+import DeleteCustomerButton from "@/components/delete-customer-button";
 import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -95,8 +97,17 @@ export default async function DashboardPage() {
       <Card className="mt-6 overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
           <h2 className="font-semibold text-slate-900">Recent customers</h2>
-          <Badge tone="brand">{newSignups} this month</Badge>
+          <span className="flex items-center gap-3">
+            <a
+              href="/api/customers/export"
+              className="text-sm font-medium text-brand-600 hover:underline"
+            >
+              Export CSV ↓
+            </a>
+            <Badge tone="brand">{newSignups} this month</Badge>
+          </span>
         </div>
+        <AddCustomerForm />
         <table className="w-full text-left text-sm">
           <thead className="text-slate-500">
             <tr>
@@ -104,12 +115,13 @@ export default async function DashboardPage() {
               <th className="px-6 py-3 font-medium">Plan</th>
               <th className="px-6 py-3 font-medium">Status</th>
               <th className="px-6 py-3 font-medium">Joined</th>
+              <th className="px-6 py-3 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
             {customers.length === 0 ? (
               <tr className="border-t border-slate-100">
-                <td colSpan={4} className="px-6 py-4 text-slate-500">
+                <td colSpan={5} className="px-6 py-4 text-slate-500">
                   No customers yet — they will appear here once someone signs up or buys.
                 </td>
               </tr>
@@ -128,6 +140,9 @@ export default async function DashboardPage() {
                   </td>
                   <td className="px-6 py-3 text-slate-700">
                     {c.joinedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </td>
+                  <td className="px-6 py-3">
+                    <DeleteCustomerButton customerId={c.id} customerName={c.name} />
                   </td>
                 </tr>
               ))
