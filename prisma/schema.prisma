@@ -1,0 +1,137 @@
+// Prisma schema — SQLite by default (works out of the box, no cloud account).
+// For production Postgres (Supabase is the recommended free host), use
+// prisma/schema.postgres.prisma instead: copy it over this file, set
+// DATABASE_URL to your Postgres connection string, then re-run
+// `npx prisma generate` and `npm run db:push`. The models are identical;
+// only the provider line changes. See README § Database.
+//
+// This kit is single-workspace: the signed-in user is the workspace owner,
+// and Customer / MonthlyRevenue / Setting rows are workspace data (seeded
+// sample data is clearly labelled in prisma/seed.ts). A User's plan is
+// their own subscription plan, activated by the Polar webhook.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  free
+  starter
+  pro
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  past_due
+  canceled
+  revoked
+}
+
+enum CustomerStatus {
+  Active
+  Trial
+  PastDue
+}
+
+model User {
+  id           String         @id @default(cuid())
+  name         String
+  email        String         @unique
+  // bcrypt hash of the password. Never store a plain-text password.
+  // Accounts created by the seed script have an unusable random hash
+  // and cannot be logged into — there is no demo login in this kit.
+  passwordHash String
+  plan         Plan           @default(free)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  sessions     Session[]
+  accounts     Account[]
+  subscription Subscription?
+}
+
+model Customer {
+  id        String         @id @default(cuid())
+  name      String
+  email     String         @unique
+  plan      Plan           @default(free)
+  status    CustomerStatus @default(Active)
+  joinedAt  DateTime       @default(now())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model Subscription {
+  id                  String             @id @default(cuid())
+  userId              String             @unique
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                Plan
+  status              SubscriptionStatus @default(trialing)
+  polarSubscriptionId String?            @unique
+  polarCustomerId     String?
+  currentPeriodEnd    DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+}
+
+// One row per month (key "2026-01") for the revenue chart.
+// Seed rows are labelled sample data in prisma/seed.ts.
+model MonthlyRevenue {
+  id        String   @id @default(cuid())
+  monthKey  String   @unique // e.g. "2026-01"
+  month     String // e.g. "Jan"
+  revenue   Int // whole USD
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Single workspace settings row (id is always "workspace").
+model Setting {
+  id            String   @id @default("workspace")
+  workspaceName String   @default("My SaaS")
+  contactEmail  String   @default("")
+  updatedAt     DateTime @updatedAt
+}
+
+// ---- Auth.js (NextAuth v5) tables, used by the Prisma adapter ----
+// Sessions are JWT-based (Auth.js Credentials provider only supports
+// JWT sessions — see src/auth.ts), so the Session table is not used
+// for login sessions, but the adapter requires the models to exist.
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
