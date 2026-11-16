@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 /**
  * Simple in-memory per-IP rate limiting — no external service.
  *
- * 10 requests per minute per IP on the public write endpoints
- * (waitlist signup, customer creation, auth signup). This is a
- * starter-kit guard against casual abuse, not a security boundary:
+ * 10 requests per minute per IP per endpoint on the public write
+ * endpoints (waitlist signup, customer creation, auth signup),
+ * each endpoint with its own bucket. This is a starter-kit guard
  * it lives in one server process's memory, so it does not share
  * state across instances — sellers running multiple instances
  * should swap it for Upstash Ratelimit or a Redis-backed limiter.
@@ -24,14 +24,15 @@ export function getClientIp(req: Request): string {
   return req.headers.get("x-real-ip") ?? "unknown";
 }
 
-export function checkRateLimit(ip: string): {
+export function checkRateLimit(ip: string, scope: string): {
   allowed: boolean;
   retryAfterSeconds: number;
 } {
   const now = Date.now();
-  const entry = hits.get(ip);
+  const key = `${scope}:${ip}`;
+  const entry = hits.get(key);
   if (!entry || now >= entry.resetAt) {
-    hits.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    hits.set(key, { count: 1, resetAt: now + WINDOW_MS });
     return { allowed: true, retryAfterSeconds: 0 };
   }
   if (entry.count >= MAX_REQUESTS) {

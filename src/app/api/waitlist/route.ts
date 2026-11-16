@@ -13,7 +13,7 @@ import { checkRateLimit, getClientIp, rateLimitExceeded } from "@/lib/rate-limit
  * deliberately generic — no internals leak.
  */
 export async function POST(req: Request) {
-  const limit = checkRateLimit(getClientIp(req));
+  const limit = checkRateLimit(getClientIp(req), "waitlist");
   if (!limit.allowed) return rateLimitExceeded(limit.retryAfterSeconds);
 
   let body: { email?: string; name?: string };
