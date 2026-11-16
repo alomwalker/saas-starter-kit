@@ -1,5 +1,6 @@
 import { Badge, Card } from "@/components/ui";
 import AddCustomerForm from "@/components/add-customer-form";
+import ImportCsvForm from "@/components/import-csv-form";
 import DeleteCustomerButton from "@/components/delete-customer-button";
 import { prisma } from "@/lib/db";
 
@@ -108,6 +109,7 @@ export default async function DashboardPage() {
           </span>
         </div>
         <AddCustomerForm />
+        <ImportCsvForm />
         <table className="w-full text-left text-sm">
           <thead className="text-slate-500">
             <tr>
