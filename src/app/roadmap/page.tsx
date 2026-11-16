@@ -19,12 +19,13 @@ const SHIPPED: Array<{ label: string; date: string; note: string }> = [
   { label: "Phase 2 — content and trust", date: "2026-11-16", note: "SEO + MDX blog, AGENTS.md / Cursor rules, free Lite version, honest proof scaffolding." },
   { label: "Batch 1 — launch tooling", date: "2026-11-16", note: "Dynamic OG images, launch waitlist, dashboard customer management + CSV export, branded emails, showcase page, Plausible hook (off by default), two blog posts, Polar affiliate finding documented." },
   { label: "Site icon", date: "2026-11-16", note: "Indigo diamond favicon, Apple touch icon, and the same mark in every header." },
+  { label: "Batch 2 — trust and tooling", date: "2026-11-16", note: "GitHub Actions CI, JSON-LD, FAQ, this roadmap, branded 404/error pages, waitlist CSV export, changelog RSS, customer CSV import, rate limiting, three more blog posts, per-page OG images." },
 ];
 
 const IN_PROGRESS: Array<{ label: string; note: string }> = [
   {
-    label: "Batch 2 — feature block",
-    note: "GitHub Actions CI, JSON-LD, FAQ, this roadmap, branded 404/error pages, waitlist CSV export, changelog RSS, customer CSV import, rate limiting, and two more blog posts.",
+    label: "Batch 3 — feature block",
+    note: "Change password in settings, security headers, landing comparison table, three more blog posts, Deploy to Vercel button, and docs search — plus a Lite-adapted FAQ and roadmap.",
   },
   {
     label: "Week 2 launch prep",

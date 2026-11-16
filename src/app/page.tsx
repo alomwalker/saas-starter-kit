@@ -109,6 +109,39 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
 ];
 
+const COMPARE_ROWS: Array<{ area: string; kit: string; scratch: string }> = [
+  {
+    area: "Auth",
+    kit: "Email + password (bcrypt), Google sign-in, magic links, password reset, email verification — all wired.",
+    scratch: "Wire a provider, sessions, password hashing, reset + verification tokens, and the account-linking rules yourself.",
+  },
+  {
+    area: "Billing",
+    kit: "Polar and Stripe checkout, signature-verified webhooks that activate plans, cancellations that downgrade.",
+    scratch: "Two checkout integrations, webhook signature verification, and the plan-activation logic behind them.",
+  },
+  {
+    area: "Dashboard",
+    kit: "Stats, revenue chart, customer table with add/delete/CSV import/export, settings, and a waitlist.",
+    scratch: "Build the admin UI and every database query behind it, plus the CSV tooling.",
+  },
+  {
+    area: "Email",
+    kit: "Branded verification, password-reset, welcome and magic-link emails via Resend, with plain-text fallbacks.",
+    scratch: "An email provider, templates that render in real clients, tokens, and the failure paths when mail is not configured.",
+  },
+  {
+    area: "Blog + SEO",
+    kit: "MDX blog, sitemap, robots.txt, per-page OG images, JSON-LD, changelog + RSS, and a public roadmap.",
+    scratch: "A content pipeline, metadata on every page, and the feeds — or a site nobody can find.",
+  },
+  {
+    area: "Deploy",
+    kit: "59 seconds from a clean clone to a responding dev server (cold cache, measured 2026-11-16); Vercel build command and CI documented.",
+    scratch: "Work out the build command, the database pooler, and the webhook URLs — the deploying-to-vercel post lists the three settings that bite.",
+  },
+];
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen">
@@ -188,6 +221,38 @@ export default function LandingPage() {
           <div className="mt-10 text-center">
             <Button href="/pricing" className="px-6 py-3 text-base">See pricing →</Button>
           </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 pb-20">
+          <SectionHeading
+            eyebrow="Kit vs building from scratch"
+            title="The boring parts, or 20–80 hours of them"
+            subtitle="Research for this kit estimated 20–80 hours to wire auth, billing, dashboard and email from scratch. The kit is running 59 seconds after a clean clone (cold cache, measured 2026-11-16) — the hours below are what you skip."
+          />
+          <div className="mt-10 overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50">
+                  <th className="px-5 py-3 font-semibold text-slate-900">Area</th>
+                  <th className="px-5 py-3 font-semibold text-slate-900">With this kit</th>
+                  <th className="px-5 py-3 font-semibold text-slate-900">Building it yourself</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARE_ROWS.map((row) => (
+                  <tr key={row.area} className="border-b border-slate-100 last:border-0">
+                    <td className="px-5 py-4 font-semibold text-slate-900">{row.area}</td>
+                    <td className="px-5 py-4 leading-relaxed text-slate-700">{row.kit}</td>
+                    <td className="px-5 py-4 leading-relaxed text-slate-600">{row.scratch}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-4 text-center text-sm text-slate-500">
+            The 20–80 hour figure is an estimate from the research behind
+            this kit, not a measured fact — the 59-second setup is measured.
+          </p>
         </section>
 
         <section className="mx-auto max-w-6xl px-6 pb-20">

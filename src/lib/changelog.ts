@@ -11,6 +11,35 @@ export interface ChangelogRelease {
 
 export const RELEASES: ChangelogRelease[] = [
   {
+    version: "Batch 2",
+    date: "2026-11-16",
+    title: "Trust and tooling",
+    items: [
+      "GitHub Actions CI: typecheck + build on every push and pull request.",
+      "JSON-LD structured data (Product on the landing page, Offer on pricing) — real prices, no ratings.",
+      "FAQ section on the landing page and a public roadmap page.",
+      "Branded 404 and error pages.",
+      "Waitlist CSV export and customer CSV import in the dashboard.",
+      "Changelog RSS feed at /changelog/rss.xml.",
+      "In-memory per-IP rate limiting (10 requests per minute per endpoint).",
+      "Three more blog posts and per-page OG images for pricing and docs.",
+    ],
+  },
+  {
+    version: "Batch 1",
+    date: "2026-11-16",
+    title: "Launch tooling",
+    items: [
+      "Dynamic OG images for the landing page and every blog post.",
+      "Launch waitlist: landing-page form with a dashboard list.",
+      "Dashboard customer management: add, delete, CSV export.",
+      "Branded HTML emails (verification, password reset, welcome, magic link).",
+      "Public showcase page with an honest empty state.",
+      "Optional Plausible analytics, off by default.",
+      "Two more blog posts; affiliate research documented (Polar has no native programme).",
+    ],
+  },
+  {
     version: "Phase 2",
     date: "2026-11-16",
     title: "Content, trust and AI-ready",
