@@ -1,0 +1,143 @@
+The landing page is one file, `src/app/page.tsx`, plus one colour
+scale in `tailwind.config.ts` and four shared components in
+`src/components/ui.tsx`. That is the whole surface: change the copy in
+the page, the colours in the config, and the page is yours. Nothing
+else in the kit needs to change.
+
+## 1. Edit the hero copy in `src/app/page.tsx`
+
+The hero is the first `<section>` inside `LandingPage()`. Everything
+a visitor reads first lives there, in plain JSX:
+
+```tsx
+<Badge tone="brand">Next.js 16 · TypeScript · Tailwind CSS</Badge>
+<h1 className="mx-auto mt-6 max-w-3xl text-5xl font-bold tracking-tight text-slate-900">
+  Ship your SaaS in days, not months
+</h1>
+<p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
+  A production-ready starter kit with a landing page, auth, a
+  dashboard, and billing wired for Polar or Stripe. Clone it, brand it,
+  launch it.
+</p>
+```
+
+Replace the badge text, the `h1`, and the paragraph with your own
+words, and change the two buttons underneath them — `Start building →`
+goes to `/auth/signup`, `Read the docs` goes to `/docs`. The small
+print below the buttons ("Sign up free — no card required") is a
+separate `<p>`; update it to match whatever your signup actually
+offers, or delete it.
+
+The same file holds the rest of the page, in order: the waitlist
+section ("Get notified at launch", rendered by `WaitlistForm` from
+`src/components/waitlist-form.tsx`), the stats grid, the feature grid,
+and the testimonials section. The `Nav()` and `Footer()` components at
+the top and bottom of the same file hold the site name — change
+"SaaS Starter" in both, and swap `public/icon.svg` (the source is
+`src/app/icon.svg`) for your own mark.
+
+## 2. Change the brand colours in `tailwind.config.ts`
+
+There is exactly one brand colour scale, and every branded element in
+the kit reads from it:
+
+```ts
+colors: {
+  brand: {
+    50: "#eef2ff",
+    100: "#e0e7ff",
+    500: "#4f46e5",
+    600: "#4338ca",
+    700: "#3730a3",
+  },
+},
+```
+
+This is the indigo scale from Tailwind's default palette. Pick your
+own colour and replace the five hex values: `600` is the primary
+button colour (`Button` uses `bg-brand-600 hover:bg-brand-700`),
+`500` is the dashboard chart colour, `100`/`700` are the `brand` tone
+of `Badge`, and `600` is the eyebrow colour of `SectionHeading`. The
+rest of the page is slate greys, so changing these five values
+re-themes the whole kit — landing page, auth pages, dashboard and
+blog — in one place.
+
+Don't invent new colour names for one page. If you need a second
+accent, add it to this scale (for example `brand` plus an `accent`
+scale) so it stays reusable. And don't edit the generated CSS: the
+kit's Tailwind setup reads this config at build time, so a rebuild
+picks the new colours up automatically.
+
+The font is set in the same file — `fontFamily.sans` starts with
+`Inter` — so a font change is one line here too.
+
+## 3. Swap the stats cards — but don't fake live data
+
+The four cards under the waitlist form come from a `LANDING_STATS`
+array at the top of `src/app/page.tsx`:
+
+```tsx
+// Marketing numbers on the landing page — illustrative, not live data.
+// Live numbers live on the dashboard, which reads the database.
+const LANDING_STATS = [
+  { label: "Monthly recurring revenue", value: "$12,480", change: "+12.4%" },
+  { label: "Active customers", value: "1,284", change: "+8.1%" },
+  { label: "Churn rate", value: "2.3%", change: "-0.4%" },
+  { label: "New signups (30d)", value: "342", change: "+18.2%" },
+];
+```
+
+Read the comment above it: these numbers are illustrative, not live.
+They are placeholder values that ship with the kit so the page looks
+complete before you have customers. Swap them for numbers that are
+true for your product — or replace the whole grid with something
+honest, like the feature list your product actually has. What you
+must not do is present them as live data when they are not: the
+dashboard (`src/app/dashboard/page.tsx`) computes the same four
+figures from the database with Prisma, and that is where real numbers
+belong. If you have no numbers yet, say so — the testimonials section
+on this same page is an honest empty state ("No testimonials yet —
+and we would rather say so than invent any") for exactly that reason.
+
+The feature grid below the stats is six `Card`s built from an inline
+array of `{ title, body }` pairs. Edit the pairs to describe your
+product, or delete the ones that don't apply. The section heading
+above it comes from `SectionHeading` with the eyebrow "Everything
+included" — change the eyebrow, title and subtitle props and the
+section is reworded without touching any layout code.
+
+## 4. Reuse the UI primitives in `src/components/ui.tsx`
+
+Four components, and the landing page is built entirely from them:
+
+- `Button` — `variant` is `"primary"`, `"secondary"` or `"ghost"`.
+  Pass `href` and it renders an `<a>`; without `href` it renders a
+  `<button>` (forms use `type="submit"`). The hero's two buttons are
+  a primary and a secondary `Button` with larger padding via
+  `className="px-6 py-3 text-base"`.
+- `Card` — a white rounded box with a border and a small shadow. Every
+  stats card and feature card is a `Card` with `className="p-5"` or
+  `"p-6"`.
+- `Badge` — a small pill. `tone` is `"slate"`, `"green"`, `"amber"` or
+  `"brand"`. The hero badge is `tone="brand"`.
+- `SectionHeading` — an eyebrow, a title and an optional subtitle,
+  centred, used by the feature grid and the testimonials section.
+
+Build new sections from these instead of inventing new components for
+one page. A page built from them looks like it belongs to the kit, and
+when you change the brand colours in `tailwind.config.ts` the new
+section re-themes with everything else. The AGENTS.md rule is blunt
+about this for a reason: "Reuse these; do not invent new primitives
+for one page."
+
+## 5. Check it
+
+```bash
+npm run typecheck   # tsc --noEmit — must pass before any commit
+npm run build       # production build — must pass before any commit
+```
+
+Then run `npm start` and open `/`. Read every label on a phone-width
+screen as well as a desktop one: the kit's rule is that no panel,
+strip or card may cover another label or place name, and a hero that
+reads fine at desktop width can still crowd at 390px.

@@ -1,0 +1,182 @@
+A new dashboard page is three steps: create the route folder, add
+one line to the nav, and fetch data the way the existing pages do.
+Auth is the fourth thing you do not have to do — a page under
+`/dashboard` is signed-in-only automatically.
+
+## 1. Create the route folder and `page.tsx`
+
+Routes are folders under `src/app/dashboard/`. A page called
+`/dashboard/reports` is:
+
+```text
+src/app/dashboard/reports/page.tsx
+```
+
+It exports a default React component, like the existing pages. The
+overview page (`src/app/dashboard/page.tsx`) is the best template to
+copy: it is an async server component that reads from the database
+and renders `Card`s. Start from this shape:
+
+```tsx
+import { Card } from "@/components/ui";
+import { prisma } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
+
+export default async function ReportsPage() {
+  const customers = await prisma.customer.findMany({
+    orderBy: { joinedAt: "desc" },
+  });
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold text-slate-900">Reports</h1>
+      <p className="mt-1 text-slate-600">What this page shows.</p>
+      <Card className="mt-6 p-6">
+        <p className="text-sm text-slate-600">
+          {customers.length} customers in the database.
+        </p>
+      </Card>
+    </div>
+  );
+}
+```
+
+Two details in that skeleton matter. First, `export const dynamic =
+"force-dynamic"` — the overview page sets it, and your page should
+too if it reads from the database. Without it Next.js prerenders the
+page at build time and serves stale data; with it, every visit runs
+the Prisma query fresh. Second, the heading and paragraph use the
+same classes as the other dashboard pages (`text-2xl font-bold
+text-slate-900` for the `h1`, `mt-1 text-slate-600` for the intro), so
+the new page matches the rest of the dashboard without any new CSS.
+
+If the page needs interactivity — a button that changes something —
+make it a client component like the billing page
+(`src/app/dashboard/billing/page.tsx` starts with `"use client"` and
+uses `useState` plus `fetch` to call an API route). A page that only
+displays data stays a server component, as above.
+
+## 2. Add the nav link in `src/app/dashboard/layout.tsx`
+
+The sidebar and the mobile header both render from one `NAV` array
+at the top of the layout:
+
+```ts
+const NAV = [
+  { href: "/dashboard", label: "Overview" },
+  { href: "/dashboard/billing", label: "Billing" },
+  { href: "/dashboard/settings", label: "Settings" },
+];
+```
+
+Add one entry and the link appears in both places — the desktop
+sidebar (`<aside>`, hidden below the `md` breakpoint) and the mobile
+header (shown below `md`):
+
+```ts
+{ href: "/dashboard/reports", label: "Reports" },
+```
+
+That is the only nav change needed. Don't hard-code a link into the
+sidebar JSX or the mobile header separately; they both map over
+`NAV`, so a hand-written link in one of them would show up on
+desktop but not on phones, or the other way round.
+
+The layout also shows the signed-in user's name, email and plan at
+the bottom of the sidebar, from the session — your page gets that
+display for free, since every dashboard page renders inside this
+layout.
+
+## 3. Fetch with Prisma, the way the kit already does
+
+Server components import the shared client from `src/lib/db`:
+
+```ts
+import { prisma } from "@/lib/db";
+```
+
+`src/lib/db.ts` exports a single `PrismaClient` instance, shared
+across hot reloads in development. Query it directly — the overview
+page reads `prisma.customer.findMany`, `prisma.monthlyRevenue.findMany`
+and `prisma.waitlistSignup.findMany`, and the schema in
+`prisma/schema.prisma` is the list of models you can query. Add a
+model to the schema when you need a new table, run `npx prisma db
+push`, and the query works.
+
+If the page needs to know who is signed in, call `getSessionUser()`
+from `src/lib/auth`:
+
+```ts
+import { getSessionUser } from "@/lib/auth";
+
+const session = await getSessionUser();
+// session is { id, name, email, plan } or null
+```
+
+That is the same function the dashboard layout itself uses to decide
+whether to show the page at all, and the same function the API routes
+use. Speaking of which: if your page needs to change data (create or
+delete a row), don't call Prisma from a client component. Add an API
+route under `src/app/api/` and follow the pattern in
+`src/app/api/customers/route.ts` — check the session first, then
+touch the database:
+
+```ts
+import { getSessionUser } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+
+export async function POST(req: Request) {
+  const session = await getSessionUser();
+  if (!session) {
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
+  }
+  // ...validate input, then prisma.<model>.create(...)
+}
+```
+
+The customers route is the reference implementation: it validates the
+input, returns 400 for bad input and 409 when a row already exists,
+and only then writes. Copy that shape rather than inventing your own
+error handling. One caveat from its header comment: the dashboard is
+single-workspace, so every customer row belongs to the owner — there
+is no per-user scoping in the kit, and a new page should not pretend
+there is.
+
+## 4. Auth is already handled — by `src/proxy.ts`
+
+You do not need to add a login check to the new page. `src/proxy.ts`
+(the Next.js 16 name for middleware) protects the whole dashboard:
+
+```ts
+export const config = { matcher: ["/dashboard/:path*"] };
+```
+
+For any path starting with `/dashboard`, it reads the Auth.js JWT
+session token with `getToken()` (signed with `AUTH_SECRET`, with the
+cookie name picked from the cookies actually present —
+`__Secure-authjs.session-token` over HTTPS,
+`authjs.session-token` over plain HTTP). If there is no valid token,
+it redirects to `/auth/login` with `?next=` set to the page that was
+requested, so the user lands back on your new page after signing in.
+
+Because the matcher is a path prefix, a new page under
+`src/app/dashboard/` is covered the moment the folder exists. There
+is no per-page allowlist to update and no auth code to add to
+`page.tsx`. The layout's own `getSessionUser()` check is a second
+layer — it redirects to the same login page — but the proxy runs
+first, before the page renders at all.
+
+## 5. Check it
+
+```bash
+npm run typecheck   # tsc --noEmit — must pass before any commit
+npm run build       # production build — must pass before any commit
+```
+
+Then run `npm start` and open the new page twice: once signed out
+(it should redirect to `/auth/login?next=/dashboard/<your-page>`),
+and once signed in (it should render, with fresh data from the
+database). If the signed-out visit renders the page instead of
+redirecting, the route is not under `/dashboard` — check the folder
+path first, not the auth code.

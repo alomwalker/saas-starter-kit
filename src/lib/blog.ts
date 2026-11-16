@@ -25,6 +25,20 @@ export const BLOG_POSTS: BlogPostMeta[] = [
     excerpt:
       "The order of operations that takes this kit from a fresh clone to a live product page. Billing setup is a paid-kit step — see the pricing page.",
   },
+  {
+    slug: "customizing-the-landing-page",
+    title: "Customizing the landing page",
+    date: "2026-11-16",
+    excerpt:
+      "The hero copy in page.tsx, the brand colours in tailwind.config.ts, the stats cards, and the shared UI primitives — how to make the landing page yours.",
+  },
+  {
+    slug: "adding-a-new-dashboard-page",
+    title: "Adding a new dashboard page",
+    date: "2026-11-16",
+    excerpt:
+      "Create the route, add the nav link, fetch with Prisma — and why a page under /dashboard is signed-in-only with no extra auth code.",
+  },
 ];
 
 export function getPost(slug: string): BlogPostMeta | undefined {
