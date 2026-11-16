@@ -45,6 +45,7 @@ function Nav() {
           <a href="/blog" className="hover:text-slate-900">Blog</a>
           <a href="/showcase" className="hover:text-slate-900">Showcase</a>
           <a href="/changelog" className="hover:text-slate-900">Changelog</a>
+          <a href="/roadmap" className="hover:text-slate-900">Roadmap</a>
           <a href="/dashboard" className="hover:text-slate-900">Dashboard</a>
         </nav>
         <div className="flex items-center gap-2">
@@ -71,6 +72,8 @@ function Footer() {
           <a href="/showcase" className="hover:text-slate-900">Showcase</a>
           {" · "}
           <a href="/changelog" className="hover:text-slate-900">Changelog</a>
+          {" · "}
+          <a href="/roadmap" className="hover:text-slate-900">Roadmap</a>
           {" · "}
           <a href="/dashboard" className="hover:text-slate-900">Dashboard</a>
         </span>
