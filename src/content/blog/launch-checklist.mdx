@@ -8,22 +8,22 @@ Clone the repo, `npm install`, copy `.env.example` to `.env` and set `AUTH_SECRE
 
 Change the brand colour in `tailwind.config.ts`, the name in the nav and footer, and the copy on the landing page. Replace the seed data in `prisma/seed.ts` with your own starting state — the sample customers are fictional and labelled as such.
 
-## 3. Set up billing
+## 3. Set up billing — in the paid kit
 
-Pick Polar or Stripe (see the Polar vs Stripe post) and set the env vars. Test the checkout link with your own email before anyone else sees it. The webhook is what activates plans — test it with a real payment in test mode, not by reading the code and hoping.
+This Lite version has no billing. When you are ready to take money, the paid kit adds Polar and Stripe checkout with verified webhooks that activate plans — see the pricing page for the upgrade. Test the checkout link with your own email before anyone else sees it.
 
 ## 4. Deploy the demo
 
 Import the repo into Vercel, set the same env vars for Production, and deploy. If you use Supabase Postgres, use the **session pooler (port 5432)** for `DATABASE_URL` — the transaction pooler breaks Prisma at runtime. Set `NEXT_PUBLIC_APP_URL` to your production domain.
 
-## 5. Set up payouts before you launch
+## 5. Set up payouts before you launch — in the paid kit
 
-This is the step everyone skips and then regrets. Polar cannot accept money until a payout account is connected — the checkout page will say "Payments are currently unavailable" until then. Complete the payout onboarding (identity check + bank account) **before** launch, because the first payout review can take days.
+This is the step everyone skips and then regrets. The paid kit's Polar checkout cannot accept money until a payout account is connected — the checkout page will say "Payments are currently unavailable" until then. Complete the payout onboarding (identity check + bank account) **before** launch, because the first payout review can take days.
 
 ## 6. Publish the proof
 
 Write your launch post, record a short demo video, and take screenshots. Link the live demo, not a screenshot of the code. Then launch in one place at a time — Product Hunt, Show HN, Reddit — and answer every comment the same day.
 
-## 7. After the first sale
+## 7. After the first user
 
-The first buyer is the first testimonial. Ask them what almost stopped them buying, and fix that before the second launch. The changelog is the public record of that loop — keep it honest and dated.
+The first user is the first testimonial. Ask them what almost stopped them signing up, and fix that before the second launch. The changelog is the public record of that loop — keep it honest and dated.

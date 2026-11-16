@@ -7,7 +7,6 @@ This kit is deliberately boring about its stack. Every piece is a well-known too
 - **Tailwind CSS 3** — one brand colour scale in `tailwind.config.ts`. Change three values and the whole kit is yours.
 - **Auth.js (NextAuth v5)** — credentials (email + password, bcrypt-hashed), Google OAuth, and magic links. Sessions are signed JWTs; users, subscriptions and dashboard data live in the database.
 - **Prisma + PostgreSQL** — one Prisma schema, one seed file with clearly-labelled sample data. Locally it runs against any Postgres; in production the recommended host is Supabase's free tier.
-- **Polar or Stripe** — two checkout options, each with a verified webhook that activates the buyer's plan. Polar is the default.
 
 ## Where things live
 
@@ -15,14 +14,13 @@ This kit is deliberately boring about its stack. Every piece is a well-known too
 |---|---|
 | Pages | `src/app/` — landing, pricing, docs, blog, changelog, auth, dashboard |
 | Auth config | `src/auth.ts`, `src/lib/auth.ts`, `src/proxy.ts` |
-| Billing | `src/lib/polar.ts`, `src/lib/stripe.ts`, `src/app/api/checkout/`, `src/app/api/webhooks/` |
 | Email | `src/lib/email.ts` (Resend) |
 | Database | `prisma/schema.prisma`, `prisma/seed.ts`, `src/lib/db.ts` |
 | UI kit | `src/components/ui.tsx` — Button, Card, Badge, SectionHeading |
 
 ## What was deliberately left out
 
-No admin panel, no multi-tenancy, no teams. Those belong in a different, B2B-priced product — the $29–$49 buyer is a solo maker, and every extra system is a week of work they will never use. The kit does one thing: get a solo maker from a clone to a live product page that can take money.
+No admin panel, no multi-tenancy, no teams, and — in this Lite version — no billing. Those belong in the paid kit, which adds Polar and Stripe checkout with verified webhooks. The kit does one thing: get a solo maker from a clone to a live product page.
 
 ## How to extend it
 

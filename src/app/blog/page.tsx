@@ -5,7 +5,7 @@ import { BLOG_POSTS } from "@/lib/blog";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Notes on building, billing and launching with the SaaS Starter Kit — how it is built, Polar vs Stripe, and the launch checklist.",
+    "Notes on building and launching with the SaaS Starter Kit — how it is built and the launch checklist. (Billing setup is a paid-kit topic.)",
 };
 
 export default function BlogIndexPage() {
@@ -24,7 +24,7 @@ export default function BlogIndexPage() {
       <main className="mx-auto max-w-4xl px-6 py-16">
         <h1 className="text-4xl font-bold text-slate-900">Blog</h1>
         <p className="mt-3 text-lg text-slate-600">
-          Notes on building, billing and launching with this kit.
+          Notes on building and launching with this kit.
         </p>
         <div className="mt-10 space-y-4">
           {BLOG_POSTS.map((post) => (

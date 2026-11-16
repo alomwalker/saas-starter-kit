@@ -4,7 +4,6 @@ import { getSessionUser } from "@/lib/auth";
 
 const NAV = [
   { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/billing", label: "Billing" },
   { href: "/dashboard/settings", label: "Settings" },
 ];
 

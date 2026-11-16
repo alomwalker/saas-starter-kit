@@ -9,4 +9,4 @@ export const SITE_URL =
 export const SITE_NAME = "SaaS Starter";
 export const SITE_TAGLINE = "Ship your SaaS in days, not months";
 export const SITE_DESCRIPTION =
-  "A production-ready Next.js SaaS starter kit: landing page, auth, dashboard, and billing wired for Polar or Stripe. Clone it, brand it, launch it.";
+  "The free Lite version of the SaaS Starter Kit: landing page, auth and dashboard in Next.js. No billing — the paid kit adds Polar and Stripe checkout.";

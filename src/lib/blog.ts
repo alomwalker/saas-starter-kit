@@ -19,18 +19,11 @@ export const BLOG_POSTS: BlogPostMeta[] = [
       "Next.js 16, Auth.js, Prisma and Postgres — what each piece does, why it was chosen, and where to find it in the code.",
   },
   {
-    slug: "polar-vs-stripe-setup",
-    title: "Polar vs Stripe: setting up billing for your buyers",
-    date: "2026-11-16",
-    excerpt:
-      "The kit ships with both. Which one to pick, what each one needs from you, and how the webhooks activate plans.",
-  },
-  {
     slug: "launch-checklist",
     title: "Launch checklist: from clone to first sale",
     date: "2026-11-16",
     excerpt:
-      "The order of operations that takes this kit from a fresh clone to a live product page that can take real money.",
+      "The order of operations that takes this kit from a fresh clone to a live product page. Billing setup is a paid-kit step — see the pricing page.",
   },
 ];
 

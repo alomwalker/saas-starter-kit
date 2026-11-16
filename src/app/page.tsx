@@ -64,9 +64,9 @@ export default function LandingPage() {
             Ship your SaaS in days, not months
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
-            A production-ready starter kit with a landing page, auth, a
-            dashboard, and billing wired for Polar or Stripe. Clone it, brand it,
-            launch it.
+            A production-ready starter kit with a landing page, auth, and
+            a dashboard. Clone it, brand it, launch it — free under the
+            MIT license.
           </p>
           <div className="mt-8 flex justify-center gap-3">
             <Button href="/auth/signup" className="px-6 py-3 text-base">Start building →</Button>
@@ -101,12 +101,12 @@ export default function LandingPage() {
           />
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {[
-              { title: "Landing + pricing pages", body: "A polished marketing site with a pricing table that links straight into Polar or Stripe checkout." },
+              { title: "Landing + pricing pages", body: "A polished marketing site with a pricing table that points at the paid kit." },
               { title: "Auth, wired", body: "Login and signup with Auth.js — email + password (bcrypt-hashed), Google sign-in, and magic links. Password reset and email verification included. No demo login." },
-              { title: "Dashboard + billing", body: "Stats, revenue chart, customer table, and a billing page that creates real Polar or Stripe checkout sessions." },
+              { title: "Dashboard", body: "Stats, revenue chart, customer table, and settings that persist — all reading from your own database." },
               { title: "TypeScript, end to end", body: "Strict types, path aliases (@/*), and a clean src/ layout your buyers can extend without guessing." },
               { title: "Tailwind, ready to theme", body: "One brand colour scale in tailwind.config.ts — change three values and the whole kit is yours." },
-              { title: "Docs included", body: "A /docs page covering setup, auth, billing, and deployment, so buyers are never stuck." },
+              { title: "Docs included", body: "A /docs page covering setup, auth, and deployment, so you are never stuck." },
             ].map((f) => (
               <Card key={f.title} className="p-6">
                 <h3 className="font-semibold text-slate-900">{f.title}</h3>

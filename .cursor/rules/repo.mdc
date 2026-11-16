@@ -9,9 +9,9 @@ globs:
 alwaysApply: true
 ---
 
-# SaaS Starter Kit — agent rules
+# SaaS Starter Kit — agent rules (Lite branch)
 
-Next.js 16 + TypeScript (strict) + Tailwind 3 + Auth.js v5 + Prisma + Postgres. Billing via Polar or Stripe. See `AGENTS.md` for the full tour.
+Next.js 16 + TypeScript (strict) + Tailwind 3 + Auth.js v5 + Prisma + Postgres. **This branch has no billing** — no Polar/Stripe, no checkout, no webhooks. See `AGENTS.md` for the full tour.
 
 ## Commands (all must pass before a commit)
 
@@ -22,7 +22,6 @@ Next.js 16 + TypeScript (strict) + Tailwind 3 + Auth.js v5 + Prisma + Postgres. 
 
 - Pages: `src/app/` (`/`, `/pricing`, `/docs`, `/blog`, `/changelog`, `/auth/*`, `/dashboard/*`)
 - Auth: `src/auth.ts`, `src/proxy.ts` (Next.js 16 — not `middleware.ts`)
-- Billing: `src/lib/polar.ts`, `src/lib/stripe.ts`, `src/app/api/checkout/`, `src/app/api/webhooks/`
 - Email: `src/lib/email.ts` (Resend)
 - Blog: `src/lib/blog.ts`, `src/content/blog/*.mdx`
 - Database: `prisma/schema.prisma`, `prisma/seed.ts`

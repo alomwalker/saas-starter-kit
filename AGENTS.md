@@ -1,10 +1,12 @@
-# AGENTS.md — SaaS Starter Kit
+# AGENTS.md — SaaS Starter Kit (Lite branch)
+
+> **This is the free Lite branch.** Landing + auth + dashboard only, no billing. There is no `src/lib/polar.ts`, no `src/lib/stripe.ts`, no `/api/checkout`, no webhooks, and no billing page. The paid kit adds those — never merge billing back into this branch, and never merge this branch's MIT license onto main.
 
 Instructions for AI coding agents working in this repo (Cursor, Claude Code, and friends). The same rules live in `.cursor/rules/repo.mdc` — this file is the human-readable copy.
 
 ## What this is
 
-A production-ready Next.js SaaS starter kit: landing page, pricing, docs, MDX blog, changelog, real auth, a database-backed dashboard, and billing via Polar (merchant of record) or Stripe. One-time purchase, $29 Starter / $49 Pro.
+A production-ready Next.js SaaS starter kit: landing page, pricing, docs, MDX blog, changelog, real auth, a database-backed dashboard. Free under the MIT license. One-time purchase of the paid kit is $29 Starter / $49 Pro (adds billing, future updates, support).
 
 ## Setup
 
@@ -26,7 +28,6 @@ npm run dev                 # http://localhost:3000
 
 - `src/app/` — App Router pages: `/` (landing), `/pricing`, `/docs`, `/blog`, `/changelog`, `/auth/*`, `/dashboard/*`.
 - `src/auth.ts` — Auth.js (NextAuth v5): credentials (bcrypt), Google OAuth, magic links, JWT sessions. `src/proxy.ts` (Next.js 16) validates the session on `/dashboard`.
-- `src/lib/polar.ts` + `src/lib/stripe.ts` — checkout. `src/app/api/checkout/` — `POST { plan, provider }`. `src/app/api/webhooks/polar|stripe/` — signature-verified webhooks that activate plans.
 - `src/lib/email.ts` — Resend: verification, password reset, welcome, magic links.
 - `src/lib/blog.ts` + `src/content/blog/*.mdx` — blog posts (rendered by `src/app/blog/[slug]/page.tsx` with `next-mdx-remote`).
 - `src/lib/site.ts` — canonical site URL, name, description (used by metadata, sitemap, robots).
@@ -40,8 +41,8 @@ npm run dev                 # http://localhost:3000
 - **Login/signup pages are `force-dynamic`** — they read env vars at request time. Never statically prerender them, or a seller who adds Google/Resend keys after deploying will never see the buttons.
 - **No demo login, no invented data.** Never add a demo user, fake testimonials, fake customer counts, or fake revenue. Empty states must say so honestly.
 - **No secrets in code or in git.** Env vars only (`.env.example` documents them). The Polar org/product IDs in `.env.example` are public identifiers, not secrets.
-- **Keep the build warning-free** and the smoke test green: `/`, `/pricing`, `/docs`, `/blog`, `/changelog`, `/sitemap.xml`, `/robots.txt` all 200; signup 200; login → dashboard 200; Polar checkout 200; Stripe checkout 400 "not configured" when no keys are set.
+- **Keep the build warning-free** and the smoke test green: `/`, `/pricing`, `/docs`, `/blog`, `/changelog`, `/sitemap.xml`, `/robots.txt` all 200; signup 200; login → dashboard 200. There is no checkout in Lite — `/api/checkout` and the webhook routes do not exist (404).
 
 ## The Lite version
 
-The `lite` branch is the free MIT version: landing + auth + dashboard, no billing. Never merge billing back into it, and never merge the Lite license (MIT) onto main.
+This branch IS the Lite version: landing + auth + dashboard, no billing. Never merge billing back into it, and never merge the Lite license (MIT) onto main. The paid kit (main branch) adds Polar/Stripe checkout and webhooks.

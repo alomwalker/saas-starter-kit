@@ -20,7 +20,7 @@ const RELEASES: Array<{
     title: "Content, trust and AI-ready",
     items: [
       "SEO: metadata and Open Graph on every page, sitemap and robots routes.",
-      "MDX blog at /blog with three starter posts (how the kit is built, Polar vs Stripe, launch checklist).",
+      "MDX blog at /blog with starter posts (how the kit is built, launch checklist). The Lite branch drops the billing post — billing lives in the paid kit.",
       "AGENTS.md and Cursor rules for agent-assisted development.",
       "Free Lite version (landing + auth + dashboard, no billing) on the lite branch, MIT licensed.",
       "Proof scaffolding: honest testimonials section and this changelog.",

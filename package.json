@@ -8,8 +8,7 @@
     "next-mdx-remote": "^5.0.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "resend": "^6.38.1",
-    "stripe": "^23.1.0"
+    "resend": "^6.38.1"
   },
   "description": "Production-ready SaaS dashboard / admin starter kit — Next.js App Router, TypeScript, Tailwind CSS, Auth.js auth, Prisma database, billing via Polar (merchant of record) or Stripe.",
   "devDependencies": {

@@ -1,57 +1,29 @@
-# SaaS Starter Kit — Standard Commercial License
+MIT License
 
-Copyright (c) 2026 David. All rights reserved.
+Copyright (c) 2026 David
 
-This is a single-buyer commercial license for the Next.js SaaS Starter Kit
-(landing page, pricing page, docs, Auth.js login/signup with email +
-password, Google sign-in and magic links, Prisma database,
-dashboard with stats / revenue chart / customer table, settings, and Polar
-or Stripe checkout + webhooks).
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-## What the buyer MAY do
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-- Use the kit to build and launch ONE commercial product (one website / one SaaS app).
-- Modify the code as much as they like for that product.
-- Use it in a client project, if the buyer is building that one product for a single client.
-- Deploy it to production and charge their own customers for their product.
-
-## What the buyer may NOT do
-
-- Resell, redistribute, share, publish, or give away the kit itself — in whole or in part, as source code, as a template, or as a competing starter kit.
-- Use the kit to build a second, separate product without buying a second license.
-- Claim they wrote the kit, or remove copyright notices from the source.
-- Use the kit in a way that breaks the law.
-
-## Plans
-
-- **Starter — $29 one-time:** the full kit, for one product, as above.
-- **Pro — $49 one-time:** the full kit, for one product, as above, plus future updates to this kit version.
-
-The price is for the license to use the code, not for a finished business.
-No income is guaranteed.
-
-**14-day money-back guarantee:** a full refund within 14 days of purchase,
-no questions asked — see § Refunds below.
-
-## Support and updates
-
-- Support is by email at alomwalker21@gmail.com for installation and setup questions for 30 days after purchase.
-- Bug fixes to the version bought are included. New features are not promised.
-
-## Warranty
-
-The kit is provided "as is", without warranty of any kind. The seller is not
-liable for lost profits, lost data, or any other loss from using the kit.
-
-## Refunds — 14-day money-back guarantee
-
-If the kit isn't what you expected, ask for a full refund within 14 days
-of purchase — no questions asked. Contact support at
-alomwalker21@gmail.com with the order details and the money is returned
-in full. After 14 days, refunds are given only if the downloaded files
-are corrupt or materially different from what was described.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ---
-*This is a standard template license for a paid starter kit, not legal advice.
-If David wants a lawyer-reviewed license before a large sale, get one — do
-not present this file as legal advice to buyers.*
+
+This is the **Lite** version of the SaaS Starter Kit: landing page, auth
+and dashboard only — no billing. The paid kit (main branch, $29 Starter /
+$49 Pro) adds Polar and Stripe checkout with verified webhooks, future
+updates and email support, under a single-buyer commercial license:
+https://saas-starter-kit-puce.vercel.app/pricing

@@ -4,7 +4,7 @@ import { Card } from "@/components/ui";
 export const metadata: Metadata = {
   title: "Documentation",
   description:
-    "Setup, auth, database, billing and deployment docs for the SaaS Starter Kit.",
+    "Setup, auth, database and deployment docs for the SaaS Starter Kit (Lite version — no billing; the paid kit adds Polar and Stripe checkout).",
 };
 
 const SECTIONS: Array<{ title: string; body: string[] }> = [
@@ -31,8 +31,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
       "src/auth.ts — Auth.js (NextAuth v5) config: credentials, Google OAuth, magic links, JWT sessions",
       "src/lib/auth.ts — getSessionUser() used by pages",
       "src/lib/db.ts — PrismaClient singleton",
-      "src/lib/polar.ts — Polar checkout (merchant of record)",
-      "src/lib/stripe.ts — Stripe checkout (inline price_data, no pre-created products)",
+      "Billing (Polar / Stripe checkout + webhooks) lives in the paid kit only — it is not in this Lite branch. See the pricing page for the upgrade.",
       "src/lib/email.ts — Resend email: verification, password reset, welcome",
       "prisma/schema.prisma — database schema (PostgreSQL)",
       "prisma/seed.ts — sample customers, revenue and settings (labelled sample data)",
@@ -59,19 +58,6 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
       "For production Postgres (Supabase is the recommended free host): use the session pooler (port 5432) on serverless hosts — the transaction pooler breaks Prisma at runtime.",
       "Dashboard stats, revenue chart, customers table and settings all read from the database.",
       "Seed data is fictional sample data — replace it with real data before launch.",
-    ],
-  },
-  {
-    title: "Billing (Polar or Stripe)",
-    body: [
-      "Two checkout options — the buyer picks on /pricing or /dashboard/billing; Polar is the default.",
-      "Polar (merchant of record, handles tax): create a product in Polar, copy its ID into POLAR_PRODUCT_ID_STARTER / POLAR_PRODUCT_ID_PRO, and set POLAR_ACCESS_TOKEN.",
-      "Stripe: only STRIPE_SECRET_KEY is needed — checkout uses inline price_data, so no Stripe products have to be pre-created.",
-      "Buyers click Buy on /pricing → POST /api/checkout { plan, provider } → Polar or Stripe checkout URL.",
-      "Polar webhooks POST to /api/webhooks/polar — the signature is verified (Svix) and a completed order/subscription activates the buyer's plan in the database; cancellations downgrade them to free.",
-      "Stripe webhooks POST to /api/webhooks/stripe — the signature is verified (HMAC-SHA256) and a completed Checkout Session activates the buyer's plan from its metadata; a refunded charge downgrades them to free.",
-      "Set the webhook URLs (https://your-domain.com/api/webhooks/polar and /api/webhooks/stripe) and the matching secrets (POLAR_WEBHOOK_SECRET, STRIPE_WEBHOOK_SECRET).",
-      "Fallback: Paddle is also a merchant of record — see README § Billing.",
     ],
   },
   {

@@ -1,10 +1,10 @@
-# SaaS Starter Kit — Next.js Dashboard / Admin Starter
+# SaaS Starter Kit — Next.js Dashboard / Admin Starter (Lite)
 
-A production-ready starter kit for building a SaaS product: landing page,
-pricing, real auth, a database-backed dashboard with stats / revenue chart /
-customer table, settings that persist, and billing wired for **Polar**
-(merchant of record) **or Stripe**, each with a verified webhook that
-activates plans. Clone it, brand it, launch it.
+> **This is the free Lite version** (the `lite` branch): landing page,
+> real auth, and a database-backed dashboard with stats / revenue chart /
+> customer table and settings that persist. **No billing** — no checkout,
+> no webhooks, no billing page. The paid kit (main branch, $29 Starter /
+> $49 Pro) adds Polar and Stripe checkout. Clone it, brand it, launch it.
 
 **Stack:** Next.js 16 (App Router) · TypeScript (strict) · Tailwind CSS 3 ·
 React 19 · Auth.js (NextAuth v5) · Prisma · PostgreSQL · bcryptjs.
@@ -36,18 +36,16 @@ Other commands: `npm run build`, `npm start`, `npm run typecheck`,
 | Area | Files |
 |---|---|
 | Landing page | `src/app/page.tsx` — hero, stats, feature grid, honest testimonials section (empty until the first real buyer) |
-| Pricing page | `src/app/pricing/page.tsx` — Free / Starter $29 / Pro $49, buys via Polar or Stripe |
+| Pricing page | `src/app/pricing/page.tsx` — shows the paid kit's tiers ($29 / $49) and links out to it; Lite itself sells nothing |
 | Docs | `src/app/docs/page.tsx` |
-| Blog | `src/app/blog/` — MDX blog (`src/content/blog/*.mdx`, rendered with `next-mdx-remote`), 3 starter posts |
+| Blog | `src/app/blog/` — MDX blog (`src/content/blog/*.mdx`, rendered with `next-mdx-remote`), 2 starter posts |
 | Changelog | `src/app/changelog/page.tsx` — real releases only, dated as shipped |
 | SEO | `src/app/layout.tsx` (metadata + Open Graph), `src/app/sitemap.ts`, `src/app/robots.ts`, `src/lib/site.ts` (canonical URL) |
 | Agent rules | `AGENTS.md` + `.cursor/rules/repo.mdc` — setup, layout, and the hard lessons (session pooler, cookie name, force-dynamic auth pages) |
-| Lite version | `lite` branch — landing + auth + dashboard only, no billing, MIT license (see below) |
 | Auth | `src/auth.ts` (Auth.js config), `src/app/auth/login`, `src/app/auth/signup`, `src/app/auth/reset-password`, `src/lib/auth.ts`, `src/proxy.ts` |
 | Email | `src/lib/email.ts` — Resend: verification, password reset, welcome, magic links |
 | Database | `prisma/schema.prisma`, `prisma/seed.ts`, `src/lib/db.ts` |
-| Dashboard | `src/app/dashboard/` — overview (from the DB), billing, settings (persisted); sidebar layout |
-| Billing | `src/lib/polar.ts` + `src/lib/stripe.ts`, `src/app/api/checkout/route.ts`, `src/app/api/webhooks/polar/route.ts`, `src/app/api/webhooks/stripe/route.ts` |
+| Dashboard | `src/app/dashboard/` — overview (from the DB), settings (persisted); sidebar layout |
 | UI kit | `src/components/ui.tsx` — Button, Card, Badge, SectionHeading |
 
 ## Auth
@@ -137,113 +135,21 @@ before launch (`prisma db seed` is idempotent — it upserts).
 3. Run `npx prisma generate && npm run db:push && npm run db:seed`.
 4. On Vercel, set the same `DATABASE_URL` env var.
 
-## Billing — Polar (primary)
+## Billing — paid kit only
 
-Why Polar: **Stripe and PayPal do not accept sellers in Bangladesh.**
-Polar is a merchant of record — it is the legal seller, handles
-VAT/sales tax, and pays out to a Bangladeshi bank account
-(5% + $0.50 per sale; payouts run through Stripe Connect — no
-Payoneer option appeared when the account was set up on 2026-11-16).
-No credentials are
-hard-coded anywhere; everything comes from env vars.
-
-**How David connects Polar later (exact steps):**
-
-1. Create an account at [polar.sh](https://polar.sh) and create an
-   organization.
-2. In Polar, create two products: **Starter ($29 one-time)** and **Pro ($49 one-time)**.
-   Copy each product ID. (Done 2026-11-16 for this kit — see polar-setup.md.)
-3. In Polar settings, create an **access token** and copy it.
-4. In this project, copy `.env.example` to `.env` and set:
-   ```
-   POLAR_ACCESS_TOKEN=<token from step 3>
-   POLAR_ORGANIZATION_ID=<organization id>
-   POLAR_PRODUCT_ID_STARTER=<Starter product id>
-   POLAR_PRODUCT_ID_PRO=<Pro product id>
-   NEXT_PUBLIC_APP_URL=<your production URL, e.g. https://yourapp.com>
-   ```
-5. Restart the app. Click **Buy Starter / Buy Pro** on `/pricing` (or
-   Upgrade on `/dashboard/billing`) — the buyer is sent to Polar checkout.
-   Without these vars, checkout returns a clear configuration error
-   instead of failing silently (try it: it is the designed behaviour).
-6. In Polar, set the webhook URL to
-   `https://your-domain.com/api/webhooks/polar` and copy the webhook
-   secret into `POLAR_WEBHOOK_SECRET`.
-
-**Webhook — implemented** (`src/app/api/webhooks/polar/route.ts`):
-the Svix signature is verified (HMAC-SHA256 over
-`<webhook-id>.<timestamp>.<raw body>`, 5-minute replay window) and
-returns 401 on a bad signature. On `order.created`,
-`subscription.created` / `subscription.active` / `subscription.updated`
-it looks the buyer up by email and activates/upgrades their plan in the
-database (creating/updating the `Subscription` row); on
-`subscription.canceled` / `subscription.revoked` it marks the
-subscription cancelled/revoked and downgrades the user to the free plan.
-Unknown event types and unknown product IDs are acknowledged and
-ignored. If no account exists for the buyer's email, the event is
-acknowledged but nothing is activated (an account must exist first).
-
-## Billing — Stripe (second option)
-
-Stripe is offered next to Polar because most SaaS buyers already have
-a Stripe account — if they want Stripe, they should not have to rewire
-billing themselves. The two options differ: Polar is a merchant of
-record (it is the legal seller and handles tax); Stripe is a payment
-processor (the seller is the legal seller and Stripe pays out to the
-seller's own bank). The buyer picks on `/pricing` or
-`/dashboard/billing`; Polar is the default.
-
-No Stripe products need pre-creating: checkout (`src/lib/stripe.ts`)
-uses inline `price_data` (amount + currency + plan name) and carries
-the plan in the Checkout Session metadata. Only two keys are needed:
-
-```
-STRIPE_SECRET_KEY=<from the Stripe dashboard, Developers → API keys>
-STRIPE_WEBHOOK_SECRET=<from the Stripe dashboard, Developers → Webhooks → the endpoint secret>
-```
-
-Set the webhook URL in Stripe to
-`https://your-domain.com/api/webhooks/stripe` and listen for
-`checkout.session.completed` (and `charge.refunded`).
-Without the keys, Stripe checkout returns a clear configuration error
-and Polar stays the only option.
-
-**Webhook — implemented** (`src/app/api/webhooks/stripe/route.ts`):
-the Stripe signature is verified by hand with node:crypto
-(HMAC-SHA256 over `<timestamp>.<raw body>`, 5-minute replay window)
-and returns 401 on a bad signature. On
-`checkout.session.completed` with `payment_status: paid` it looks the
-buyer up by the session's customer email, reads the plan from the
-session metadata and activates it in the database; on
-`charge.refunded` it marks the subscription cancelled and downgrades
-the user to the free plan. Unknown events and sessions with no plan
-in metadata are acknowledged and ignored.
-
-## Billing — Paddle (fallback)
-
-Paddle is also a merchant of record and lists Bangladesh as supported
-(5% + $0.50 per sale). Use it only if Polar rejects your product
-(Polar reviews software products and can decline without a reason).
-
-Steps: create a Paddle account and product, add a
-`src/lib/paddle.ts` mirroring `src/lib/polar.ts` (same
-`createCheckout(plan)` shape), point `/api/checkout` at it when
-`POLAR_ACCESS_TOKEN` is absent, and set `PADDLE_API_KEY` /
-`PADDLE_PRODUCT_ID_PRO` in `.env`. Do **not** use Gumroad as the
-sole payout channel (its Bangladesh bank-payout status is conflicting)
-and do **not** use Lemon Squeezy without a fallback (it is being moved
-onto Stripe's merchant-of-record service, which does not accept
-Bangladesh sellers). Do not open a PayPal/Stripe account with a foreign
-address, and do not form a US LLC just to get Stripe without
-professional advice.
+This Lite branch has no billing: no checkout routes, no webhooks, no
+billing page, and no Polar/Stripe code. If you need to take money, use
+the paid kit (main branch, $29 Starter / $49 Pro), which adds Polar
+(merchant of record) and Stripe checkout, each with a verified webhook
+that activates plans. The pricing page in this branch links to it.
 
 ## Blog, changelog and SEO
 
 - **Blog** — `/blog` is an MDX blog. Posts live in
   `src/content/blog/*.mdx` with their titles/dates in `src/lib/blog.ts`
   and render at `/blog/<slug>` via `next-mdx-remote`. Three starter
-  posts ship with the kit (how the kit is built, Polar vs Stripe,
-  launch checklist). Add a post by dropping in a `.mdx` file and one
+  posts ship with the kit (how the kit is built, launch checklist).
+  Add a post by dropping in a `.mdx` file and one
   entry in `src/lib/blog.ts`.
 - **Changelog** — `/changelog` lists the real releases (v1, v2, Phase 1,
   Phase 2), dated as shipped. Add a release there when you ship one —
@@ -257,19 +163,18 @@ professional advice.
   testimonials and no customer count until the first real buyer exists.
   Do not invent any.
 
-## Free Lite version
+## This branch is the Lite version
 
-The `lite` branch is the free MIT version: landing + auth + dashboard,
-no billing (no checkout routes, no webhooks, no billing page) and no
-Pro update promises. Its pricing page links to the paid kit instead of
-selling anything. It is a separate branch of this repo, not a separate
-repo — check it out with `git checkout lite`. Never merge billing back
-into it, and never merge its MIT license onto main.
+You are on the free MIT version: landing + auth + dashboard, no billing
+(no checkout routes, no webhooks, no billing page) and no Pro update
+promises. Its pricing page links to the paid kit instead of selling
+anything. Never merge billing back into this branch, and never merge
+this MIT license onto main (the paid kit has a commercial license).
 
 ## Agent rules
 
 `AGENTS.md` (and `.cursor/rules/repo.mdc`) is the repo tour for AI
-coding agents: setup, commands, where auth/billing/database live, and
+coding agents: setup, commands, where auth/database live, and
 the hard lessons (session pooler, session-cookie name, force-dynamic
 auth pages). Keep it accurate when the layout changes.
 
@@ -285,34 +190,28 @@ auth pages). Keep it accurate when the layout changes.
 - Brand colour: change the `brand` scale in `tailwind.config.ts`.
 - Name: search for `SaaS Starter` and replace; set
   `NEXT_PUBLIC_APP_NAME` in `.env`.
-- Plans/prices: edit `PLANS` in `src/lib/polar.ts` and the tiers in
-  `src/app/pricing/page.tsx`.
+- Plans/prices: the tiers in `src/app/pricing/page.tsx` describe the
+  paid kit — edit them there. (Billing itself lives on main, not here.)
 - Data: seed data lives in `prisma/seed.ts` — delete or replace it;
   the dashboard queries the database, so no code change is needed.
 - Auth providers: Google and magic links are built in (see § Auth);
   add more OAuth providers in `src/auth.ts` (the Prisma adapter
   tables already exist).
 
-## What is still missing before it can be listed for sale
+## What is still missing before you ship with Lite
 
-1. **Polar account + products** — create them and set the env vars
-   (§ Billing). No accounts were created for this kit.
-2. **Buyer-facing polish for the listing** — screenshots / a short demo
-   video, a license file (see `LICENSE.md` — add one before selling),
-   and a support email address. See `DEMO_PLAN.md`.
-3. **A production database** — run the Postgres steps in § Database
+1. **A production database** — run the Postgres steps in § Database
    before deploying.
+2. **Your own branding** — see § Customising (name, colours, copy).
+3. **Billing, if you want to charge** — that is the paid kit (main
+   branch). This branch will never take a payment.
 
-Auth, the database, the Polar and Stripe webhooks, email and settings
-persistence are done.
+Auth, the database, email and settings persistence are done. The
+license is MIT — no purchase needed (see `LICENSE.md`).
 
 ## Honest limits
 
 - No income is guaranteed; the median digital product earns little.
   This kit is a starting point, not a business.
-- Checkout and the webhooks were verified only as far as the
-  configuration / signature paths (no Polar or Stripe account with
-  real keys exists in this repo, so no real payment was tested —
-  see the verification notes in the delivery).
 - The seed dashboard figures are fictional sample data, labelled as
   such; they are not real revenue.
