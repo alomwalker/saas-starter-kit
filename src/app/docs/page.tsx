@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Card } from "@/components/ui";
+import DocsSearch from "./DocsSearch";
 
 export const metadata: Metadata = {
   title: "Documentation",
@@ -81,6 +81,9 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
     title: "Deploy",
     body: [
       "Vercel: import the repo, set the same env vars, deploy. Any Node host works too: npm run build && npm start (Node ≥ 20.9).",
+      "One-click deploy: https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Falomwalker%2Fsaas-starter-kit — it imports the repo's default branch (the paid kit). To deploy this Lite version, pick the lite branch on Vercel's import screen. You still have to set the env vars below and the build command, or the deploy builds and then fails at runtime.",
+      "Env vars to set (Production and Preview): AUTH_SECRET, NEXT_PUBLIC_APP_URL, DATABASE_URL and DIRECT_URL (Supabase session pooler, port 5432). Optional: RESEND_API_KEY, EMAIL_FROM, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, NEXT_PUBLIC_PLAUSIBLE_DOMAIN. Billing keys (Polar/Stripe) do not exist in Lite.",
+      "Build command: prisma generate && DATABASE_URL=$DIRECT_URL prisma db push --accept-data-loss && prisma db seed && next build, plus the env var CI=true (Next.js 16's build fails on Vercel without it).",
       "Set NEXT_PUBLIC_APP_URL to your production domain before launch.",
       "On Vercel, use Postgres (Supabase) with the session pooler (port 5432).",
     ],
@@ -101,18 +104,7 @@ export default function DocsPage() {
         <p className="mt-3 text-lg text-slate-600">
           Everything you need to run, brand, and launch this starter kit.
         </p>
-        <div className="mt-10 space-y-4">
-          {SECTIONS.map((s) => (
-            <Card key={s.title} className="p-6">
-              <h2 className="text-lg font-semibold text-slate-900">{s.title}</h2>
-              <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-slate-700">
-                {s.body.map((line) => (
-                  <li key={line} className="font-mono text-[13px]">{line}</li>
-                ))}
-              </ul>
-            </Card>
-          ))}
-        </div>
+        <DocsSearch sections={SECTIONS} />
       </main>
     </div>
   );
