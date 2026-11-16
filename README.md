@@ -35,7 +35,8 @@ Other commands: `npm run build`, `npm start`, `npm run typecheck`,
 
 | Area | Files |
 |---|---|
-| Landing page | `src/app/page.tsx` — hero, stats, feature grid, honest testimonials section (empty until the first real buyer) |
+| Landing page | `src/app/page.tsx` — hero, stats, feature grid, waitlist form, honest testimonials section (empty until the first real buyer) |
+| Waitlist | `src/app/api/waitlist/route.ts`, `src/components/waitlist-form.tsx`, `WaitlistSignup` model — email capture on the landing page, listed on the dashboard; the kit never emails signups itself |
 | Pricing page | `src/app/pricing/page.tsx` — shows the paid kit's tiers ($29 / $49) and links out to it; Lite itself sells nothing |
 | Docs | `src/app/docs/page.tsx` |
 | Blog | `src/app/blog/` — MDX blog (`src/content/blog/*.mdx`, rendered with `next-mdx-remote`), 2 starter posts |
