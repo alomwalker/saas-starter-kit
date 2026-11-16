@@ -16,7 +16,7 @@ type Plan = (typeof PLANS)[number];
  *   200 { ok: true } / 400 missing id / 404 not found.
  */
 export async function POST(req: Request) {
-  const limit = checkRateLimit(getClientIp(req));
+  const limit = checkRateLimit(getClientIp(req), "customers");
   if (!limit.allowed) return rateLimitExceeded(limit.retryAfterSeconds);
 
   const session = await getSessionUser();

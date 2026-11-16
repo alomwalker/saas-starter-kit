@@ -17,7 +17,7 @@ import { checkRateLimit, getClientIp, rateLimitExceeded } from "@/lib/rate-limit
  * Login is NOT blocked while the email is unverified (README § Auth).
  */
 export async function POST(req: Request) {
-  const limit = checkRateLimit(getClientIp(req));
+  const limit = checkRateLimit(getClientIp(req), "signup");
   if (!limit.allowed) return rateLimitExceeded(limit.retryAfterSeconds);
 
   const { name, email, password } = (await req.json()) as {

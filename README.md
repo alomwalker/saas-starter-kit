@@ -97,9 +97,11 @@ There is no demo user and no demo login anywhere in this kit.
 ## Rate limiting
 
 The public write endpoints are rate-limited in memory
-(`src/lib/rate-limit.ts`): **10 requests per minute per IP** on
-`POST /api/waitlist`, `POST /api/customers` and
-`POST /api/auth/signup`. Past the limit the endpoint answers **429**
+(`src/lib/rate-limit.ts`): **10 requests per minute per IP per
+endpoint** on `POST /api/waitlist`, `POST /api/customers` and
+`POST /api/auth/signup`. Each endpoint has its own bucket, so a
+burst on the waitlist never blocks a signup from the same IP.
+Past the limit the endpoint answers **429**
 with a JSON error and a `Retry-After` header. The limit is per IP
 (`x-forwarded-for`, first entry, else `x-real-ip`).
 
