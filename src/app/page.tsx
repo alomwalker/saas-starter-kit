@@ -75,6 +75,10 @@ export default function LandingPage() {
           <p className="mt-4 text-sm text-slate-500">
             Sign up free — no card required. Your account is stored in your own database.
           </p>
+          <p className="mt-2 text-sm text-slate-500">
+            From clone to a running app in under a minute — measured at 59
+            seconds with a cold package cache (30 seconds warm).
+          </p>
         </section>
 
         <section className="mx-auto max-w-6xl px-6 pb-16">

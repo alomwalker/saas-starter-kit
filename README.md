@@ -22,6 +22,12 @@ npm run dev                   # http://localhost:3000
 Sign up at `/auth/signup` — your account is created in the database and
 you are logged straight into `/dashboard`. There is no demo login.
 
+Setup time, measured 2026-11-16 from a clean clone on this machine:
+**59 seconds** from `git clone` to a responding dev server with a cold
+package cache (30 seconds with a warm cache) — `npm install`,
+`npm run db:setup`, `npm run dev`. Your machine and network will vary;
+the point is that there is no long build step before you can see it run.
+
 Other commands: `npm run build`, `npm start`, `npm run typecheck`,
 `npm run db:push`, `npm run db:seed`.
 

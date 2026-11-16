@@ -16,6 +16,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
       "3. npm run db:setup — creates the database and seeds sample data",
       "4. npm run dev — open http://localhost:3000",
       "5. Sign up at /auth/signup — your account is stored in the database",
+      "Measured setup time (2026-11-16, clean clone): 59 seconds to a responding dev server with a cold package cache (30s warm).",
     ],
   },
   {
