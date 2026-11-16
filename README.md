@@ -92,6 +92,22 @@ the reset flow. Only enable `allowDangerousEmailAccountLinking` in
 
 There is no demo user and no demo login anywhere in this kit.
 
+## Rate limiting
+
+The public write endpoints are rate-limited in memory
+(`src/lib/rate-limit.ts`): **10 requests per minute per IP** on
+`POST /api/waitlist`, `POST /api/customers` and
+`POST /api/auth/signup`. Past the limit the endpoint answers **429**
+with a JSON error and a `Retry-After` header. The limit is per IP
+(`x-forwarded-for`, first entry, else `x-real-ip`).
+
+This is a starter-kit guard, not a security boundary: the counters
+live in one server process's memory and are not shared across
+instances, and a determined attacker can rotate IPs. If you run
+multiple instances or need stronger abuse protection, swap it for
+Upstash Ratelimit or a Redis-backed limiter — the check is one call
+at the top of each route handler.
+
 ## Email
 
 Transactional email via **Resend** (`src/lib/email.ts`) — one key,

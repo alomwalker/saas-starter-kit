@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { sendVerificationEmail, sendWelcomeEmail } from "@/lib/email";
+import { checkRateLimit, getClientIp, rateLimitExceeded } from "@/lib/rate-limit";
 
 /**
  * Real signup: creates a User row with a bcrypt-hashed password.
@@ -16,6 +17,9 @@ import { sendVerificationEmail, sendWelcomeEmail } from "@/lib/email";
  * Login is NOT blocked while the email is unverified (README § Auth).
  */
 export async function POST(req: Request) {
+  const limit = checkRateLimit(getClientIp(req));
+  if (!limit.allowed) return rateLimitExceeded(limit.retryAfterSeconds);
+
   const { name, email, password } = (await req.json()) as {
     name?: string;
     email?: string;
