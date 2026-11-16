@@ -1,0 +1,81 @@
+Stripe is the kit's second checkout option, next to Polar. The
+difference matters: Polar is a merchant of record and handles tax
+for you; Stripe is a payment processor — the money goes to your
+own Stripe account and out to your own bank. The kit's Stripe
+code is in `src/lib/stripe.ts`, the checkout route is
+`src/app/api/checkout/route.ts`, and the webhook is
+`src/app/api/webhooks/stripe/route.ts`.
+
+## 1. Two keys, no products to create
+
+Set these in `.env` (and in Vercel, for Production and Preview):
+
+- `STRIPE_SECRET_KEY` — from your Stripe dashboard (API keys).
+- `STRIPE_WEBHOOK_SECRET` — from the webhook endpoint you create
+  in step 3. It is a different secret from the API key.
+
+You do **not** create any products in Stripe. Checkout uses
+inline `price_data`: the amount comes from the plan itself
+(`PLANS[plan].priceUsd * 100` — Stripe takes cents), the currency
+is USD, and the product name is `SaaS Starter — <plan> plan`. The
+plan is carried in the Checkout Session's `metadata: { plan }`,
+and the webhook reads it back. If you add a third plan to the kit,
+you only change `PLANS` in `src/lib/polar.ts` — nothing in Stripe.
+
+Use Stripe's test keys while you wire this up, and switch to live
+keys when you are ready to take real money.
+
+## 2. How a purchase flows
+
+A buyer clicks Buy on `/pricing` (or on `/dashboard/billing`) and
+the page posts `{ plan, provider: "stripe" }` to
+`/api/checkout`. That route calls `createStripeCheckout` in
+`src/lib/stripe.ts`, which creates a Checkout Session in `payment`
+mode and returns the hosted checkout URL. The buyer pays on
+Stripe's page, not yours.
+
+- On success Stripe redirects to
+  `/dashboard/billing?checkout=success&provider=stripe`.
+- On cancel it redirects to `/pricing?checkout=cancelled`.
+
+If `STRIPE_SECRET_KEY` is not set, the checkout route answers 400
+with "Stripe is not configured" — the same clear-error pattern
+Polar uses. The button is never a dead end.
+
+## 3. The webhook is what activates the plan
+
+Checkout alone does not change the buyer's plan — the webhook
+does. Create a webhook endpoint in the Stripe dashboard pointing
+at `https://your-domain.com/api/webhooks/stripe` and subscribe it
+to `checkout.session.completed` and `charge.refunded`. Copy the
+endpoint's signing secret into `STRIPE_WEBHOOK_SECRET`.
+
+The route verifies the signature by hand with `node:crypto`: the
+`stripe-signature` header carries `t=<timestamp>,v1=<hex hmac>`
+over `<timestamp>.<raw body>`, keyed by the endpoint secret, and
+requests older than 5 minutes are rejected (replay protection).
+A bad signature answers 401; no secret configured answers 400.
+
+What each event does:
+
+- `checkout.session.completed` — the plan is read from the
+  session's metadata, the buyer is matched to a `User` row by
+  email, and the plan is activated (the `Subscription` row is
+  upserted with the session id and customer id). If the session
+  is not `paid`, or the email has no account, the event is
+  acknowledged (200) and ignored — the buyer must have an
+  account first, and the warning is logged so you can follow up.
+- `charge.refunded` — the subscription is marked cancelled and
+  the user is downgraded to the free plan.
+- Anything else — acknowledged (200) and ignored.
+
+## 4. The two mistakes that bite
+
+- **Wrong secret.** The webhook secret is the endpoint's signing
+  secret, not your API key. If every webhook answers 401, you
+  pasted the wrong one.
+- **Placeholder webhook URL.** A webhook still pointing at
+  `your-domain.com` means paid customers stay on the free plan —
+  checkout works, activation never happens. Update the URL in
+  Stripe right after the first deploy, and watch the webhook
+  endpoint's delivery log for the first real event.

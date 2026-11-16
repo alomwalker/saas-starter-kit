@@ -67,6 +67,27 @@ export const BLOG_POSTS: BlogPostMeta[] = [
     excerpt:
       "The 14-day money-back guarantee from the license, how a buyer asks, and what the Polar and Stripe webhooks do to the buyer's plan afterwards.",
   },
+  {
+    slug: "setting-up-stripe-checkout",
+    title: "Setting up Stripe checkout",
+    date: "2026-11-16",
+    excerpt:
+      "Two keys, no products to create, and a webhook that activates plans — how the kit's Stripe checkout works, from src/lib/stripe.ts to the first real payment.",
+  },
+  {
+    slug: "setting-up-email-with-resend",
+    title: "Setting up email with Resend",
+    date: "2026-11-16",
+    excerpt:
+      "One API key, a verified sending domain, and four branded emails — plus why nothing crashes when the key is missing.",
+  },
+  {
+    slug: "wiring-up-google-sign-in",
+    title: "Wiring up Google sign-in",
+    date: "2026-11-16",
+    excerpt:
+      "An OAuth client, two env vars, and the account-linking rule that keeps a Google sign-in from taking over a password account.",
+  },
 ];
 
 export function getPost(slug: string): BlogPostMeta | undefined {

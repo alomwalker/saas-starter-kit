@@ -1,0 +1,71 @@
+The kit sends four transactional emails — verification,
+password reset, welcome, and magic-link sign-in — all through
+Resend. The code is in `src/lib/email.ts`, and the magic-link
+provider is wired in `src/auth.ts`. There is one key to set, and
+one decision about the sending domain.
+
+## 1. One key
+
+Set `RESEND_API_KEY` in `.env` (and in Vercel, for Production and
+Preview) from your Resend dashboard. That is the only key the kit
+needs for email.
+
+`EMAIL_FROM` is optional: it is the sender shown on outgoing
+mail, and it defaults to `SaaS Starter <onboarding@resend.dev>`.
+Change it to your own address once you have verified a domain
+(see step 2) — and update the name to your product's name while
+you are there, since "SaaS Starter" is the kit's placeholder.
+
+## 2. Verify your sending domain (or accept the limits)
+
+Resend's free tier covers 100 emails a day, which is plenty for a
+new product. But until you verify your own sending domain in
+Resend, mail is sent from `onboarding@resend.dev` and Resend only
+delivers to the Resend account owner's own email address. That
+means verification and reset emails will not reach your buyers
+at all — they silently go nowhere for anyone but you.
+
+Verify the domain before launch: add the DNS records Resend
+gives you, wait for verification, then set `EMAIL_FROM` to an
+address on that domain. Until then, the kit's email flows still
+work end to end for your own address, which is how you test them.
+
+## 3. The four emails
+
+- **Verification** — sent on signup, with a 24-hour link to
+  `/api/auth/verify-email`. The link sets `emailVerified` on the
+  user.
+- **Password reset** — requested from the login page's "Forgot
+  password?" form, with a 1-hour link to `/auth/reset-password`.
+- **Welcome** — sent on signup, with a link back to the
+  dashboard.
+- **Magic link** — sent by Auth.js's Resend provider when a buyer
+  asks to sign in by email; the link works once and expires in
+  24 hours.
+
+Every email uses the same branded template: an indigo header
+with the ◆ diamond mark (a text glyph, not an external image —
+email clients block remote images by default) and a plain-text
+fallback, so the message reads correctly even where HTML is
+stripped.
+
+## 4. How the tokens work
+
+Reset and verification links carry a random 256-bit token. Only
+its SHA-256 hash is stored, in the Auth.js `VerificationToken`
+table — a database leak does not expose a usable token. A token
+is deleted when it is used, so a link works exactly once, and
+re-requesting a link invalidates the previous one for the same
+address. The helpers are `createEmailToken` and
+`verifyEmailToken` in `src/lib/email.ts`.
+
+## 5. What happens without the key
+
+Nothing crashes. If `RESEND_API_KEY` is not set, every send
+function returns a clear "not configured" result instead of
+throwing: signup still succeeds (and reports `emailSent: false`),
+password reset always answers 200 without revealing whether the
+account exists, and the magic-link provider is not registered at
+all, so its button is hidden. Auth keeps working — only the email
+step reports the missing key. That is deliberate: a buyer who has
+not set up email yet should get a working product, not a 500.
