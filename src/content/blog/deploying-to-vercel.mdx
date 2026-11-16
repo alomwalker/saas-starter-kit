@@ -1,0 +1,92 @@
+This kit deploys to Vercel the ordinary way — import the repo, set
+the env vars, deploy — but there are three settings that are not
+obvious and will bite if you skip them. They come from deploying
+this exact kit, not from the Vercel docs.
+
+## 1. Import the repo
+
+In Vercel, import the GitHub repo as a new project. The framework
+preset is Next.js and needs no changes. The default build command
+does **not** work for this kit — replace it in Project Settings →
+Build and Deployment with:
+
+```bash
+prisma generate && DATABASE_URL=$DIRECT_URL prisma db push --accept-data-loss && prisma db seed && next build
+```
+
+Why each part is there:
+
+- `prisma generate` — the Prisma client is generated at build time,
+  not committed to the repo.
+- `DATABASE_URL=$DIRECT_URL prisma db push` — applies the schema to
+  the production database on every deploy, using the direct
+  connection (see step 3).
+- `--accept-data-loss` — the schema adds a unique constraint that
+  `db push` refuses without this flag. It is safe here: the
+  constraint is on a column that is null for every existing row.
+- `prisma db seed` — reseeds the labelled sample data. The seed is
+  idempotent, so redeploys don't duplicate rows.
+- `next build` — the actual build.
+
+## 2. Set CI=true
+
+Next.js 16's build fails on Vercel with "next build cannot be run in
+an interactive terminal because stdin is not a TTY" unless the `CI`
+env var is set. Add `CI=true` for Production and Preview. This is a
+Vercel-environment quirk — the same build passes locally.
+
+## 3. Use the session pooler for Postgres
+
+If your database is Supabase Postgres, set both `DATABASE_URL` and
+`DIRECT_URL` to the **session pooler (port 5432)**. Do not use the
+transaction pooler (port 6543): `prisma db push` hangs against it
+until Vercel's build times out, and Prisma breaks at runtime with
+error 42P05 ("prepared statement already exists"). The direct
+connection (`db.<ref>.supabase.co`) is IPv6-only and unreachable
+from Vercel's build network, which is why the build command uses the
+pooler for the push step too.
+
+## 4. Set the env vars
+
+Copy every line from `.env.example` into Vercel (Production and
+Preview) and fill in the values:
+
+- `AUTH_SECRET` — a long random value (`openssl rand -base64 32`).
+  Without it, nobody can sign in.
+- `NEXT_PUBLIC_APP_URL` — your production domain, e.g.
+  `https://your-app.vercel.app`. Metadata, sitemap and email links
+  all point here.
+- `DATABASE_URL` and `DIRECT_URL` — the session pooler strings.
+- `POLAR_ORGANIZATION_ID`, `POLAR_PRODUCT_ID_STARTER`,
+  `POLAR_PRODUCT_ID_PRO`, `POLAR_ACCESS_TOKEN`,
+  `POLAR_WEBHOOK_SECRET` — from your Polar account (see README §
+  Billing). Stripe and Resend keys are optional: without them,
+  Stripe checkout returns a clear "not configured" error and email
+  steps report "not configured" instead of crashing.
+
+No secrets go in the repo. `.env` is git-ignored; only `.env.example`
+is committed.
+
+## 5. Point the webhooks at the live domain
+
+After the first deploy, update the webhook URLs in Polar and Stripe
+to `https://your-domain.com/api/webhooks/polar` and
+`https://your-domain.com/api/webhooks/stripe`. The webhook is what
+activates a buyer's plan after payment — a placeholder URL means
+paid customers stay on the free plan.
+
+## 6. Verify the deploy the way the kit verifies itself
+
+Open the live URL and check: landing 200, signup 200, login →
+dashboard 200 showing your name, and `POST /api/checkout` returns a
+real Polar checkout URL. If signup returns 500, the tables were
+never pushed — check the build log for the `db push` step. If login
+loops back to the login page, the session cookie name is wrong (see
+`src/proxy.ts` — over HTTPS Auth.js sets
+`__Secure-authjs.session-token`).
+
+## 7. A custom domain
+
+Add it in Vercel → Domains, then update `NEXT_PUBLIC_APP_URL` to
+match and redeploy — `NEXT_PUBLIC_*` values are baked in at build
+time, so changing the variable without redeploying does nothing.

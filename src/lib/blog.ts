@@ -32,6 +32,20 @@ export const BLOG_POSTS: BlogPostMeta[] = [
     excerpt:
       "The order of operations that takes this kit from a fresh clone to a live product page that can take real money.",
   },
+  {
+    slug: "adding-a-new-page",
+    title: "Adding a new page to the kit",
+    date: "2026-11-16",
+    excerpt:
+      "One file, metadata, the shared UI kit, and the sitemap — the whole process, with the mistakes to avoid.",
+  },
+  {
+    slug: "deploying-to-vercel",
+    title: "Deploying the kit to Vercel",
+    date: "2026-11-16",
+    excerpt:
+      "The build command, CI=true, the session pooler, and the webhook URLs — the three settings that bite if you skip them.",
+  },
 ];
 
 export function getPost(slug: string): BlogPostMeta | undefined {

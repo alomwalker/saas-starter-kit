@@ -1,0 +1,86 @@
+Every page in this kit is one file in `src/app/`. There is no central
+router to register with and no config to update — if the file exists in
+the right place, the route exists. Here is the whole process, using a
+real example: adding a `/features` page.
+
+## 1. Create the file
+
+A page is `src/app/<route>/page.tsx` exporting a default React
+component:
+
+```text
+src/app/features/page.tsx
+```
+
+The route is the folder path: `src/app/features/page.tsx` serves
+`/features`. A nested route like `/docs/billing` is
+`src/app/docs/billing/page.tsx`. Dynamic segments use square brackets
+— the blog uses `src/app/blog/[slug]/page.tsx` — but a plain page
+needs none of that.
+
+## 2. Add metadata
+
+Every page should export a `metadata` object. It is what shows up in
+the browser tab and in link previews:
+
+```tsx
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Features",
+  description: "Everything the kit includes, in one place.",
+};
+```
+
+The root layout (`src/app/layout.tsx`) sets a title template, so
+this page's tab reads "Features · SaaS Starter". The Open Graph image
+is automatic: `src/app/opengraph-image.tsx` renders a branded
+1200×630 image for every page that does not define its own.
+
+## 3. Reuse the UI kit, don't invent components
+
+`src/components/ui.tsx` has `Button`, `Card`, `Badge` and
+`SectionHeading`. Use them — they are the kit's visual language, and
+a page built from them looks like it belongs. The form inputs on the
+auth pages use `rounded-lg border border-slate-300 px-3 py-2`; copy
+that class list rather than inventing a new one.
+
+Copy the header from an existing page (the docs page is the shortest
+one) so the nav, the icon mark and the "Back home" link match. The
+footer lives only on the landing page; other pages end after `<main>`.
+
+## 4. Tell the sitemap
+
+`src/app/sitemap.ts` lists the static pages by hand:
+
+```ts
+const staticPages = ["", "/pricing", "/docs", "/blog", "/showcase", "/changelog"].map(...)
+```
+
+Add `"/features"` to that array so `/sitemap.xml` includes the new
+page. Blog posts are added automatically from `src/lib/blog.ts`, so
+this step is only for hand-written pages.
+
+## 5. Check it the way the kit checks everything
+
+```bash
+npm run typecheck   # tsc --noEmit — must pass before any commit
+npm run build       # production build — must pass before any commit
+```
+
+Then run `npm start` and open the page: it should return 200, render
+the header, and show the right title in the tab. If the page reads
+from the database, make it `force-dynamic` (like the dashboard) or it
+will be prerendered with stale data — and if it reads env vars at
+request time (like the login page), it must be `force-dynamic` too, or
+a seller who changes the vars after deploying will never see the
+change.
+
+## 6. What not to do
+
+Don't add a route by editing a router file — there isn't one. Don't
+copy-paste a whole page and leave the old title and metadata in it;
+the tab and the link preview will lie. And don't add a page that
+shows numbers you don't have: the landing page's testimonials section
+is an honest empty state for a reason, and a new page should be held
+to the same standard.

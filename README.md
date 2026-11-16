@@ -39,7 +39,7 @@ Other commands: `npm run build`, `npm start`, `npm run typecheck`,
 | Waitlist | `src/app/api/waitlist/route.ts`, `src/components/waitlist-form.tsx`, `WaitlistSignup` model — email capture on the landing page, listed on the dashboard; the kit never emails signups itself |
 | Pricing page | `src/app/pricing/page.tsx` — Free / Starter $29 / Pro $49, buys via Polar or Stripe |
 | Docs | `src/app/docs/page.tsx` |
-| Blog | `src/app/blog/` — MDX blog (`src/content/blog/*.mdx`, rendered with `next-mdx-remote`), 3 starter posts |
+| Blog | `src/app/blog/` — MDX blog (`src/content/blog/*.mdx`, rendered with `next-mdx-remote`), 5 starter posts |
 | Changelog | `src/app/changelog/page.tsx` — real releases only, dated as shipped |
 | Showcase | `src/app/showcase/page.tsx`, `SHOWCASE.md` — public leaderboard, honest empty state until the first buyer ships; listings are manual and reviewed |
 | SEO | `src/app/layout.tsx` (metadata + Open Graph), `src/app/sitemap.ts`, `src/app/robots.ts`, `src/lib/site.ts` (canonical URL) |
@@ -243,9 +243,9 @@ professional advice.
 
 - **Blog** — `/blog` is an MDX blog. Posts live in
   `src/content/blog/*.mdx` with their titles/dates in `src/lib/blog.ts`
-  and render at `/blog/<slug>` via `next-mdx-remote`. Three starter
+  and render at `/blog/<slug>` via `next-mdx-remote`. Five starter
   posts ship with the kit (how the kit is built, Polar vs Stripe,
-  launch checklist). Add a post by dropping in a `.mdx` file and one
+  launch checklist, adding a new page, deploying to Vercel). Add a post by dropping in a `.mdx` file and one
   entry in `src/lib/blog.ts`.
 - **Changelog** — `/changelog` lists the real releases (v1, v2, Phase 1,
   Phase 2), dated as shipped. Add a release there when you ship one —
