@@ -12,6 +12,42 @@ export type ChangelogRelease = {
 
 export const RELEASES: ChangelogRelease[] = [
   {
+    version: "Batch 3 (Lite)",
+    date: "2026-11-16",
+    title: "Settings, search and docs",
+    items: [
+      "Change password in dashboard settings (current + new password, minimum 8 characters).",
+      "Security headers on every response (nosniff, referrer policy, frame deny, permissions policy).",
+      "Two more blog posts: setting up email with Resend, wiring up Google sign-in. The Stripe post stays paid-kit-only.",
+      "Client-side search on the docs page.",
+      "Deploy to Vercel button in the README and docs — with the note that it imports the paid kit's default branch unless you pick lite.",
+      "Lite FAQ on the landing page and this Lite roadmap page.",
+    ],
+  },
+  {
+    version: "Batch 2 (Lite)",
+    date: "2026-11-16",
+    title: "Trust and tooling",
+    items: [
+      "GitHub Actions CI: typecheck + build on every push and pull request.",
+      "Branded 404 and error pages.",
+      "Two more blog posts and a changelog RSS feed at /changelog/rss.xml.",
+      "Waitlist CSV export and customer CSV import in the dashboard.",
+      "In-memory per-IP rate limiting (10 requests per minute per endpoint).",
+    ],
+  },
+  {
+    version: "Batch 1 (Lite)",
+    date: "2026-11-16",
+    title: "Launch tooling",
+    items: [
+      "Dynamic OG images for the landing page and every blog post.",
+      "Launch waitlist: landing-page form with a dashboard list.",
+      "Dashboard customer management: add, delete, CSV export.",
+      "Public showcase page with an honest empty state.",
+    ],
+  },
+  {
     version: "Phase 2",
     date: "2026-11-16",
     title: "Content, trust and AI-ready",

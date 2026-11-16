@@ -24,6 +24,7 @@ function Nav() {
           <a href="/blog" className="hover:text-slate-900">Blog</a>
           <a href="/showcase" className="hover:text-slate-900">Showcase</a>
           <a href="/changelog" className="hover:text-slate-900">Changelog</a>
+          <a href="/roadmap" className="hover:text-slate-900">Roadmap</a>
           <a href="/dashboard" className="hover:text-slate-900">Dashboard</a>
         </nav>
         <div className="flex items-center gap-2">
@@ -51,12 +52,41 @@ function Footer() {
           {" · "}
           <a href="/changelog" className="hover:text-slate-900">Changelog</a>
           {" · "}
+          <a href="/roadmap" className="hover:text-slate-900">Roadmap</a>
+          {" · "}
           <a href="/dashboard" className="hover:text-slate-900">Dashboard</a>
         </span>
       </div>
     </footer>
   );
 }
+
+const LITE_FAQS: Array<{ q: string; a: string }> = [
+  {
+    q: "What does Lite include?",
+    a: "A landing page, pricing page, docs, an MDX blog and changelog, Auth.js login (email + password, Google sign-in, magic links), and a Prisma-backed dashboard with customers, revenue, settings, a waitlist and CSV tools. Everything except billing.",
+  },
+  {
+    q: "Does Lite have billing?",
+    a: "No. There is no checkout, no webhook and no billing page — /api/checkout does not exist on this branch. Billing (Polar and Stripe checkout plus the webhooks that activate plans) is what the paid kit adds.",
+  },
+  {
+    q: "What does the MIT license let me do?",
+    a: "Use Lite in commercial products, modify it, and ship it — free, with no payment. The license is in LICENSE.md. What it does not include is the paid kit: billing, future updates to the paid version, and email support.",
+  },
+  {
+    q: "How do I upgrade to the paid kit?",
+    a: "Starter is $29 and Pro is $49, each a one-time payment on the pricing page. The paid kit adds Polar and Stripe checkout with verified webhooks, future updates to this version, and 30 days of email support.",
+  },
+  {
+    q: "How fast can I get it running?",
+    a: "From a clean clone to a responding dev server in 59 seconds with a cold package cache (30 seconds warm) — measured on 2026-11-16. Setup is npm install, copy .env.example, npm run db:setup, npm run dev.",
+  },
+  {
+    q: "What if I get stuck?",
+    a: "The /docs page covers setup, auth, database and deployment. Lite itself has no promised email support — it is free. The paid kit includes 30 days of email support at alomwalker21@gmail.com.",
+  },
+];
 
 export default function LandingPage() {
   return (
@@ -132,6 +162,22 @@ export default function LandingPage() {
           </div>
           <div className="mt-10 text-center">
             <Button href="/pricing" className="px-6 py-3 text-base">See pricing →</Button>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 pb-20">
+          <SectionHeading
+            eyebrow="Questions"
+            title="Frequently asked questions"
+            subtitle="The answers Lite users actually ask for — only what is true on this free branch."
+          />
+          <div className="mx-auto mt-10 max-w-3xl space-y-3">
+            {LITE_FAQS.map((f) => (
+              <details key={f.q} className="rounded-lg border border-slate-200 bg-white p-5">
+                <summary className="cursor-pointer font-semibold text-slate-900">{f.q}</summary>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{f.a}</p>
+              </details>
+            ))}
           </div>
         </section>
 
