@@ -15,7 +15,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   return (
     <div className="flex min-h-screen">
       <aside className="hidden w-60 shrink-0 flex-col border-r border-slate-200 bg-white p-5 md:flex">
-        <a href="/" className="text-lg font-bold text-slate-900">◆ SaaS Starter</a>
+        <a href="/" className="flex items-center gap-2 text-lg font-bold text-slate-900"><img src="/icon.svg" alt="" className="h-5 w-5" />SaaS Starter</a>
         <nav className="mt-8 space-y-1 text-sm">
           {NAV.map((item) => (
             <a
@@ -39,7 +39,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
       </aside>
       <div className="flex-1">
         <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 md:hidden">
-          <a href="/" className="font-bold text-slate-900">◆ SaaS Starter</a>
+          <a href="/" className="flex items-center gap-2 font-bold text-slate-900"><img src="/icon.svg" alt="" className="h-5 w-5" />SaaS Starter</a>
           <nav className="flex gap-4 text-sm">
             {NAV.map((item) => (
               <a key={item.href} href={item.href} className="text-slate-700">{item.label}</a>

@@ -13,8 +13,9 @@ function Nav() {
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="/" className="text-lg font-bold text-slate-900">
-          ◆ SaaS Starter
+        <a href="/" className="flex items-center gap-2 text-lg font-bold text-slate-900">
+          <img src="/icon.svg" alt="" className="h-5 w-5" />
+          SaaS Starter
         </a>
         <nav className="hidden items-center gap-6 text-sm text-slate-600 md:flex">
           <a href="/pricing" className="hover:text-slate-900">Pricing</a>
