@@ -79,6 +79,33 @@ function Footer() {
   );
 }
 
+const FAQS: Array<{ q: string; a: string }> = [
+  {
+    q: "Is the price really one-time?",
+    a: "Yes. Starter is $29 and Pro is $49, each a single one-time payment through Polar or Stripe. There is no subscription, no renewal, and no per-seat charge.",
+  },
+  {
+    q: "What if it doesn't work for me?",
+    a: "Every purchase comes with a 14-day money-back guarantee — a full refund within 14 days of purchase, no questions asked. Contact alomwalker21@gmail.com.",
+  },
+  {
+    q: "Polar or Stripe — which should I use?",
+    a: "Both are built in and both work. Polar is the merchant of record, so it handles tax for you; Stripe checkout pays straight to your own Stripe account. You connect your own keys for whichever you pick — the kit never touches your buyers' money itself.",
+  },
+  {
+    q: "What exactly do I get?",
+    a: "A landing page, pricing page, docs, an MDX blog and changelog, Auth.js login (email + password, Google sign-in, magic links), a Prisma-backed dashboard with customers and revenue, and verified Polar + Stripe checkout and webhooks. The full list is in README § What is included.",
+  },
+  {
+    q: "How fast can I get it running?",
+    a: "From a clean clone to a responding dev server in 59 seconds with a cold package cache (30 seconds warm) — measured on 2026-11-16. Setup is npm install, copy .env.example, npm run db:setup, npm run dev.",
+  },
+  {
+    q: "What if I get stuck?",
+    a: "The /docs page covers setup, auth, database, billing and deployment. For setup questions after purchase, email alomwalker21@gmail.com — support is included for 30 days.",
+  },
+];
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen">
@@ -157,6 +184,22 @@ export default function LandingPage() {
           </div>
           <div className="mt-10 text-center">
             <Button href="/pricing" className="px-6 py-3 text-base">See pricing →</Button>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 pb-20">
+          <SectionHeading
+            eyebrow="Questions"
+            title="Frequently asked questions"
+            subtitle="The answers buyers actually ask for, from the docs and the license — nothing padded."
+          />
+          <div className="mx-auto mt-10 max-w-3xl space-y-3">
+            {FAQS.map((f) => (
+              <details key={f.q} className="rounded-lg border border-slate-200 bg-white p-5">
+                <summary className="cursor-pointer font-semibold text-slate-900">{f.q}</summary>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{f.a}</p>
+              </details>
+            ))}
           </div>
         </section>
 
