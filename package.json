@@ -10,7 +10,7 @@
     "react-dom": "^19.3.1",
     "resend": "^6.38.1"
   },
-  "description": "Production-ready SaaS dashboard / admin starter kit — Next.js App Router, TypeScript, Tailwind CSS, Auth.js auth, Prisma database, billing via Polar (merchant of record) or Stripe.",
+  "description": "Production-ready SaaS dashboard / admin starter kit — Next.js App Router, TypeScript, Tailwind CSS, Auth.js auth, Prisma database. Free Lite version (MIT); the paid kit adds billing via Polar (merchant of record) or Stripe.",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "20.14.12",

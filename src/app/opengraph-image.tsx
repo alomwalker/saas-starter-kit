@@ -48,7 +48,7 @@ export default function Image() {
           {SITE_DESCRIPTION}
         </div>
         <div style={{ display: "flex", marginTop: 44, fontSize: 24, color: "#a5b4fc" }}>
-          Next.js 16 · Auth.js · Prisma · Polar / Stripe
+          Next.js 16 · Auth.js · Prisma
         </div>
       </div>
     ),
