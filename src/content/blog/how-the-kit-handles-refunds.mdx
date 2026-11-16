@@ -1,0 +1,63 @@
+# How the kit handles refunds
+
+A buyer who asks for their money back is a support conversation, not a
+code path — but the kit is built so that conversation has a clear answer
+and the access ends cleanly afterwards. This post covers the promise, the
+request, and what happens in the database for each payment provider.
+
+## The promise: 14 days, no questions asked
+
+The license (`LICENSE.md`, § Refunds) gives every buyer a **14-day
+money-back guarantee**: a full refund within 14 days of purchase, no
+questions asked. The same promise is on the landing page's FAQ and on the
+pricing page, next to the prices — $29 Starter and $49 Pro, both
+one-time purchases.
+
+After 14 days, refunds are given only if the downloaded files are corrupt
+or materially different from what was described. Support — including
+refund requests — is by email at alomwalker21@gmail.com, for installation
+and setup questions for 30 days after purchase.
+
+## How a buyer asks
+
+The buyer emails support at alomwalker21@gmail.com with the order
+details, and the money is returned in full. There is no self-serve refund
+button in the dashboard: a refund is the seller's decision, and the kit
+keeps it that way on purpose — the dashboard's billing page links to the
+checkout providers, it does not move money.
+
+## What happens to the buyer's access
+
+The kit is a one-time purchase, so there is no subscription to cancel in
+the usual sense — but a refunded buyer should not keep a paid plan. That
+is handled differently per provider, because the providers report refunds
+differently:
+
+- **Stripe.** The Stripe webhook (`src/app/api/webhooks/stripe/route.ts`)
+  listens for `charge.refunded` and marks the buyer's subscription
+  cancelled, which downgrades them to the free plan. A Stripe refund
+  issued from the Stripe dashboard therefore takes effect automatically
+  the moment Stripe sends the event — no manual step in the kit.
+- **Polar.** Polar is the merchant of record, so the refund itself is
+  issued in Polar's dashboard. The Polar webhook
+  (`src/app/api/webhooks/polar/route.ts`) handles `subscription.canceled`
+  and `subscription.revoked` by marking the subscription cancelled or
+  revoked, which downgrades the buyer to free. So after refunding in
+  Polar, cancel or revoke the buyer's order/subscription there and the
+  kit follows.
+
+In both cases the downgrade is the same one the cancellation paths use —
+the buyer's `User.plan` goes back to `free` and the dashboard shows the
+free plan. Nothing is deleted: the user, their customers and their data
+stay, only the paid plan is removed.
+
+## What the seller should check
+
+1. The refund was actually issued in Polar or Stripe — the kit never
+   moves money, it only reacts to the provider's events.
+2. The webhook is reachable and its secret is set (`POLAR_WEBHOOK_SECRET`
+   or `STRIPE_WEBHOOK_SECRET`) — otherwise the downgrade event never
+   arrives and the buyer keeps the paid plan until the seller changes it
+   by hand.
+3. The buyer got a reply at the support email. The guarantee promises a
+   full refund within 14 days; the email is the record that it happened.

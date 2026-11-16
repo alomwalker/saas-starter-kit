@@ -60,6 +60,13 @@ export const BLOG_POSTS: BlogPostMeta[] = [
     excerpt:
       "Create the route, add the nav link, fetch with Prisma — and why a page under /dashboard is signed-in-only with no extra auth code.",
   },
+  {
+    slug: "how-the-kit-handles-refunds",
+    title: "How the kit handles refunds",
+    date: "2026-11-16",
+    excerpt:
+      "The 14-day money-back guarantee from the license, how a buyer asks, and what the Polar and Stripe webhooks do to the buyer's plan afterwards.",
+  },
 ];
 
 export function getPost(slug: string): BlogPostMeta | undefined {
