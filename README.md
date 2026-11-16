@@ -200,6 +200,28 @@ auth pages). Keep it accurate when the layout changes.
 
 ## Deploy
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Falomwalker%2Fsaas-starter-kit)
+
+One click imports the repo into Vercel — but note that it imports
+the repo's default branch, which is the **paid kit**. To deploy
+**this Lite version**, pick the `lite` branch on Vercel's import
+screen instead. Either way, the deploy still needs two things
+from you afterwards, or it will build and then fail at runtime:
+
+- **Env vars** (Vercel → Project Settings → Environment Variables,
+  Production and Preview): `AUTH_SECRET`, `NEXT_PUBLIC_APP_URL`,
+  `DATABASE_URL` and `DIRECT_URL` (Supabase session pooler, port
+  5432). Optional: `RESEND_API_KEY`, `EMAIL_FROM`,
+  `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`,
+  `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. Billing keys (Polar/Stripe) do
+  not exist in Lite — they belong to the paid kit. See
+  `.env.example` for the full list.
+- **Build command** (Project Settings → Build and Deployment):
+  `prisma generate && DATABASE_URL=$DIRECT_URL prisma db push --accept-data-loss && prisma db seed && next build`,
+  plus the env var `CI=true` (Next.js 16's build fails on Vercel
+  without it). See the deploying-to-vercel blog post for why each
+  part is there.
+
 - **Vercel (recommended):** import the repo, set the same env vars,
   deploy. Set `NEXT_PUBLIC_APP_URL` to the production domain. Use
   Postgres (Supabase) — see § Database.
