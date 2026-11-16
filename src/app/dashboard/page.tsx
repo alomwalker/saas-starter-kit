@@ -31,10 +31,15 @@ const STATUS_LABEL: Record<string, string> = { Active: "Active", Trial: "Trial",
  * revenue as the business grows. No demo data file exists anymore.
  */
 export default async function DashboardPage() {
-  const [customers, revenueRows] = await Promise.all([
+  const [customers, revenueRows, waitlist] = await Promise.all([
     prisma.customer.findMany({ orderBy: { joinedAt: "desc" } }),
     prisma.monthlyRevenue.findMany({ orderBy: { monthKey: "asc" } }),
+    prisma.waitlistSignup.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    }),
   ]);
+  const waitlistCount = await prisma.waitlistSignup.count();
 
   const active = customers.filter((c) => c.status === "Active").length;
   const pastDue = customers.filter((c) => c.status === "PastDue").length;
@@ -129,6 +134,37 @@ export default async function DashboardPage() {
             )}
           </tbody>
         </table>
+      </Card>
+
+      <Card className="mt-6 overflow-hidden">
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+          <h2 className="font-semibold text-slate-900">Launch waitlist</h2>
+          <Badge tone="brand">{waitlistCount} signed up</Badge>
+        </div>
+        <p className="border-b border-slate-200 px-6 py-3 text-sm text-slate-500">
+          Emails captured by the “Get notified at launch” form on the
+          landing page. The kit never emails them — export this list and
+          mail them from your own tool when you launch.
+        </p>
+        {waitlist.length === 0 ? (
+          <p className="px-6 py-4 text-sm text-slate-500">
+            No signups yet — they will appear here once someone joins the waitlist.
+          </p>
+        ) : (
+          <ul className="divide-y divide-slate-100">
+            {waitlist.map((w) => (
+              <li key={w.email} className="flex items-center justify-between px-6 py-3 text-sm">
+                <span className="font-medium text-slate-900">
+                  {w.name ? `${w.name} · ` : ""}
+                  {w.email}
+                </span>
+                <span className="text-slate-500">
+                  {w.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </Card>
     </div>
   );

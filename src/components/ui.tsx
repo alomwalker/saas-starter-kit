@@ -5,11 +5,17 @@ export function Button({
   href,
   variant = "primary",
   className = "",
+  type = "button",
+  disabled = false,
 }: {
   children: ReactNode;
   href?: string;
   variant?: "primary" | "secondary" | "ghost";
   className?: string;
+  // Only used when rendering a <button> (no href): forms use
+  // type="submit"; disabled greys the button out while submitting.
+  type?: "button" | "submit";
+  disabled?: boolean;
 }) {
   const styles =
     variant === "primary"
@@ -17,11 +23,11 @@ export function Button({
       : variant === "secondary"
         ? "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
         : "text-slate-700 hover:bg-slate-100";
-  const cls = `inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition ${styles} ${className}`;
+  const cls = `inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition ${styles} ${disabled ? "cursor-not-allowed opacity-60" : ""} ${className}`;
   return href ? (
     <a href={href} className={cls}>{children}</a>
   ) : (
-    <button type="button" className={cls}>{children}</button>
+    <button type={type} disabled={disabled} className={cls}>{children}</button>
   );
 }
 

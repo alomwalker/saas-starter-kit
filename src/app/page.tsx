@@ -1,4 +1,5 @@
 import { Badge, Button, Card, SectionHeading } from "@/components/ui";
+import WaitlistForm from "@/components/waitlist-form";
 
 // Marketing numbers on the landing page — illustrative, not live data.
 // Live numbers live on the dashboard, which reads the database.
@@ -80,6 +81,17 @@ export default function LandingPage() {
             From clone to a running app in under a minute — measured at 59
             seconds with a cold package cache (30 seconds warm).
           </p>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 pb-16 text-center">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+            Get notified at launch
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-slate-600">
+            Leave your email and we will tell you the moment this kit is
+            for sale. One email, at launch — nothing else.
+          </p>
+          <WaitlistForm />
         </section>
 
         <section className="mx-auto max-w-6xl px-6 pb-16">

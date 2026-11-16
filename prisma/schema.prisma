@@ -74,6 +74,17 @@ model Customer {
   updatedAt DateTime       @updatedAt
 }
 
+// Launch waitlist — emails captured on the landing page ("Get
+// notified at launch"). No email is ever sent to these addresses
+// by the kit itself; the seller exports them from the dashboard
+// and mails them from their own tool when the product launches.
+model WaitlistSignup {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+}
+
 model Subscription {
   id                  String             @id @default(cuid())
   userId              String             @unique
