@@ -67,6 +67,23 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: "SaaS Starter Kit",
+            offers: (["starter", "pro"] as const).map((plan) => ({
+              "@type": "Offer",
+              name: plan === "starter" ? "Starter" : "Pro",
+              price: PLANS[plan].priceUsd,
+              priceCurrency: "USD",
+              availability: "https://schema.org/InStock",
+            })),
+          }),
+        }}
+      />
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="/" className="flex items-center gap-2 text-lg font-bold text-slate-900"><img src="/icon.svg" alt="" className="h-5 w-5" />SaaS Starter</a>

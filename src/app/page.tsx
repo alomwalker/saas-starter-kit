@@ -1,5 +1,26 @@
 import { Badge, Button, Card, SectionHeading } from "@/components/ui";
 import WaitlistForm from "@/components/waitlist-form";
+import { PLANS } from "@/lib/polar";
+import { SITE_DESCRIPTION, SITE_URL } from "@/lib/site";
+
+// Product structured data — real prices only, no ratings or reviews
+// (there are none yet; inventing them would be a lie to search engines).
+const PRODUCT_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "SaaS Starter Kit",
+  description: SITE_DESCRIPTION,
+  url: SITE_URL,
+  brand: { "@type": "Brand", name: "SaaS Starter" },
+  offers: (["starter", "pro"] as const).map((plan) => ({
+    "@type": "Offer",
+    name: plan === "starter" ? "Starter" : "Pro",
+    price: PLANS[plan].priceUsd,
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
+    url: `${SITE_URL}/pricing`,
+  })),
+};
 
 // Marketing numbers on the landing page — illustrative, not live data.
 // Live numbers live on the dashboard, which reads the database.
@@ -61,6 +82,10 @@ function Footer() {
 export default function LandingPage() {
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(PRODUCT_JSON_LD) }}
+      />
       <Nav />
       <main>
         <section className="mx-auto max-w-6xl px-6 py-20 text-center">
