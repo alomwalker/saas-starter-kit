@@ -118,9 +118,7 @@ export default function PricingPage() {
         </div>
         <p className="mt-8 text-center text-sm text-slate-500">
           Prices in USD. Polar is the merchant of record and handles tax.
-          Demo note: checkout needs POLAR_* env vars — without them you will
-          see the configuration error above, by design.
-        </p>
+                            </p>
       </main>
     </div>
   );
