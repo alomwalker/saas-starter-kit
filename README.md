@@ -41,6 +41,7 @@ Other commands: `npm run build`, `npm start`, `npm run typecheck`,
 | Docs | `src/app/docs/page.tsx` |
 | Blog | `src/app/blog/` — MDX blog (`src/content/blog/*.mdx`, rendered with `next-mdx-remote`), 3 starter posts |
 | Changelog | `src/app/changelog/page.tsx` — real releases only, dated as shipped |
+| Showcase | `src/app/showcase/page.tsx`, `SHOWCASE.md` — public leaderboard, honest empty state until the first buyer ships; listings are manual and reviewed |
 | SEO | `src/app/layout.tsx` (metadata + Open Graph), `src/app/sitemap.ts`, `src/app/robots.ts`, `src/lib/site.ts` (canonical URL) |
 | Agent rules | `AGENTS.md` + `.cursor/rules/repo.mdc` — setup, layout, and the hard lessons (session pooler, cookie name, force-dynamic auth pages) |
 | Lite version | `lite` branch — landing + auth + dashboard only, no billing, MIT license (see below) |

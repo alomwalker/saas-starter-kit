@@ -22,6 +22,7 @@ function Nav() {
           <a href="/pricing" className="hover:text-slate-900">Pricing</a>
           <a href="/docs" className="hover:text-slate-900">Docs</a>
           <a href="/blog" className="hover:text-slate-900">Blog</a>
+          <a href="/showcase" className="hover:text-slate-900">Showcase</a>
           <a href="/changelog" className="hover:text-slate-900">Changelog</a>
           <a href="/dashboard" className="hover:text-slate-900">Dashboard</a>
         </nav>
@@ -45,6 +46,8 @@ function Footer() {
           <a href="/docs" className="hover:text-slate-900">Docs</a>
           {" · "}
           <a href="/blog" className="hover:text-slate-900">Blog</a>
+          {" · "}
+          <a href="/showcase" className="hover:text-slate-900">Showcase</a>
           {" · "}
           <a href="/changelog" className="hover:text-slate-900">Changelog</a>
           {" · "}

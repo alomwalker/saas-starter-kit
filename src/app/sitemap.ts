@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 
 /** Sitemap: static pages plus every blog post. */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPages = ["", "/pricing", "/docs", "/blog", "/changelog"].map(
+  const staticPages = ["", "/pricing", "/docs", "/blog", "/showcase", "/changelog"].map(
     (route) => ({
       url: `${SITE_URL}${route}`,
       lastModified: new Date("2026-11-16"),
