@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { checkRateLimit, getClientIp, rateLimitExceeded } from "@/lib/rate-limit";
 
 const PLANS = ["free", "starter", "pro"] as const;
 type Plan = (typeof PLANS)[number];
@@ -15,6 +16,9 @@ type Plan = (typeof PLANS)[number];
  *   200 { ok: true } / 400 missing id / 404 not found.
  */
 export async function POST(req: Request) {
+  const limit = checkRateLimit(getClientIp(req));
+  if (!limit.allowed) return rateLimitExceeded(limit.retryAfterSeconds);
+
   const session = await getSessionUser();
   if (!session) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });

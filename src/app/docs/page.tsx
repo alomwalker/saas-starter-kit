@@ -62,6 +62,13 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
     ],
   },
   {
+    title: "Rate limiting",
+    body: [
+      "POST /api/waitlist, POST /api/customers and POST /api/auth/signup are limited to 10 requests per minute per IP (src/lib/rate-limit.ts). Past the limit the endpoint answers 429 with a JSON error and a Retry-After header.",
+      "The limit is in-memory and per server process — it does not share state across instances. For multiple instances, swap it for Upstash Ratelimit or a Redis-backed limiter.",
+    ],
+  },
+  {
     title: "Billing (Polar or Stripe)",
     body: [
       "Two checkout options — the buyer picks on /pricing or /dashboard/billing; Polar is the default.",

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { checkRateLimit, getClientIp, rateLimitExceeded } from "@/lib/rate-limit";
 
 /**
  * Launch waitlist: POST { email, name? }.
@@ -12,6 +13,9 @@ import { prisma } from "@/lib/db";
  * deliberately generic — no internals leak.
  */
 export async function POST(req: Request) {
+  const limit = checkRateLimit(getClientIp(req));
+  if (!limit.allowed) return rateLimitExceeded(limit.retryAfterSeconds);
+
   let body: { email?: string; name?: string };
   try {
     body = (await req.json()) as { email?: string; name?: string };
