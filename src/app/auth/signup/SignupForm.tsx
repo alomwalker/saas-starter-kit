@@ -90,7 +90,7 @@ export default function SignupForm({ googleEnabled }: { googleEnabled: boolean }
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2" />
           </label>
-          <Button className="w-full py-2.5">{busy ? "Creating…" : "Create account"}</Button>
+          <Button type="submit" className="w-full py-2.5">{busy ? "Creating…" : "Create account"}</Button>
         </form>
         <p className="mt-4 text-center text-sm text-slate-600">
           Already have an account? <a href="/auth/login" className="text-brand-600 hover:underline">Log in</a>

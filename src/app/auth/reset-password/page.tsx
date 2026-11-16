@@ -76,7 +76,7 @@ function ResetForm() {
               onChange={(e) => setConfirm(e.target.value)}
               className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2" />
           </label>
-          <Button className="w-full py-2.5">{busy ? "Saving…" : "Set new password"}</Button>
+          <Button type="submit" className="w-full py-2.5">{busy ? "Saving…" : "Set new password"}</Button>
         </form>
       )}
     </Card>

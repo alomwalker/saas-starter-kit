@@ -150,7 +150,7 @@ function LoginForm({
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
           />
         </label>
-        <Button className="w-full py-2.5" variant="primary">
+        <Button type="submit" className="w-full py-2.5" variant="primary">
           {busy ? "Logging in…" : "Log in"}
         </Button>
       </form>
@@ -176,7 +176,7 @@ function LoginForm({
               className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2"
             />
           </label>
-          <Button className="w-full py-2" variant="secondary">
+          <Button type="submit" className="w-full py-2" variant="secondary">
             {forgotBusy ? "Sending…" : "Email me a reset link"}
           </Button>
           {forgotDone ? <p className="text-sm text-slate-700">{forgotDone}</p> : null}
@@ -203,7 +203,7 @@ function LoginForm({
                   className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
                 />
               </label>
-              <Button className="w-full py-2" variant="secondary">
+              <Button type="submit" className="w-full py-2" variant="secondary">
                 {magicBusy ? "Sending…" : "Email me a sign-in link"}
               </Button>
             </form>
