@@ -154,7 +154,15 @@ export default async function DashboardPage() {
       <Card className="mt-6 overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
           <h2 className="font-semibold text-slate-900">Launch waitlist</h2>
-          <Badge tone="brand">{waitlistCount} signed up</Badge>
+          <span className="flex items-center gap-3">
+            <a
+              href="/api/waitlist/export"
+              className="text-sm font-medium text-brand-600 hover:underline"
+            >
+              Export CSV ↓
+            </a>
+            <Badge tone="brand">{waitlistCount} signed up</Badge>
+          </span>
         </div>
         <p className="border-b border-slate-200 px-6 py-3 text-sm text-slate-500">
           Emails captured by the “Get notified at launch” form on the
