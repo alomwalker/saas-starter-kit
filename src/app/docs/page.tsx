@@ -84,6 +84,14 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
     ],
   },
   {
+    title: "Analytics (optional, off by default)",
+    body: [
+      "Plausible (privacy-friendly, no cookies): set NEXT_PUBLIC_PLAUSIBLE_DOMAIN to your own domain and the root layout injects Plausible's script on every page.",
+      "Without that variable, no analytics script is injected and nothing is tracked — the demo ships with analytics off.",
+      "Plausible itself is a paid service (free trial, then from $9/month); the kit only wires in the script tag. Add your domain at plausible.io first, then set the variable.",
+    ],
+  },
+  {
     title: "Deploy",
     body: [
       "Vercel: import the repo, set the same env vars, deploy. Any Node host works too: npm run build && npm start (Node ≥ 20.9).",

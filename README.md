@@ -259,6 +259,19 @@ professional advice.
   testimonials and no customer count until the first real buyer exists.
   Do not invent any.
 
+## Analytics (optional, off by default)
+
+- **Plausible** — privacy-friendly analytics (no cookies, no personal
+  data). Set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` to your own domain and the
+  root layout (`src/app/layout.tsx`) injects Plausible's script
+  (`https://plausible.io/js/script.js`) on every page.
+- Without that variable, **no analytics script is injected and nothing
+  is tracked** — the demo ships with analytics off.
+- Plausible itself is a paid service (free trial, then from $9/month);
+  the kit only wires in the script tag. Add your domain at plausible.io
+  first, then set the variable and redeploy (`NEXT_PUBLIC_*` values are
+  baked in at build time).
+
 ## Free Lite version
 
 The `lite` branch is the free MIT version: landing + auth + dashboard,
