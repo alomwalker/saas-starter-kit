@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>SaaS Starter Kit icon</title>
+  <!-- Rounded tile in the brand indigo, white diamond mark. -->
+  <rect width="512" height="512" rx="112" fill="#4338ca"/>
+  <path d="M256 118 L394 256 L256 394 L118 256 Z" fill="#ffffff"/>
+  <path d="M256 118 L394 256 L256 256 Z" fill="#e0e7ff"/>
+</svg>
